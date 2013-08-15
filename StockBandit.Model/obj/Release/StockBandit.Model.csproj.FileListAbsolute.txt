@@ -1,0 +1,6 @@
+D:\code\StockBandit\StockBandit.Model\bin\Release\StockBandit.Model.dll
+D:\code\StockBandit\StockBandit.Model\bin\Release\StockBandit.Model.pdb
+D:\code\StockBandit\StockBandit.Model\obj\Release\ResolveAssemblyReference.cache
+D:\code\StockBandit\StockBandit.Model\obj\Release\StockBandit.Model.dll
+D:\code\StockBandit\StockBandit.Model\obj\Release\StockBandit.Model.pdb
+D:\code\StockBandit\StockBandit.Model\bin\Release\StockBandit.Model.dll.config

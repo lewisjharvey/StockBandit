@@ -1,0 +1,12 @@
+D:\code\StockBandit\StockBandit.Server\bin\Debug\StockBandit.Server.dll
+D:\code\StockBandit\StockBandit.Server\bin\Debug\StockBandit.Server.pdb
+D:\code\StockBandit\StockBandit.Server\bin\Debug\log4net.dll
+D:\code\StockBandit\StockBandit.Server\bin\Debug\StockBandit.Model.dll
+D:\code\StockBandit\StockBandit.Server\bin\Debug\StockBandit.Model.pdb
+D:\code\StockBandit\StockBandit.Server\obj\Debug\ResolveAssemblyReference.cache
+D:\code\StockBandit\StockBandit.Server\obj\Debug\StockBandit.Server.dll
+D:\code\StockBandit\StockBandit.Server\obj\Debug\StockBandit.Server.pdb
+D:\code\StockBandit\StockBandit.Server\bin\Debug\StockBandit.Server.dll.config
+D:\code\StockBandit\StockBandit.Server\bin\Debug\HtmlAgilityPack.dll
+D:\code\StockBandit\StockBandit.Server\bin\Debug\HtmlAgilityPack.pdb
+D:\code\StockBandit\StockBandit.Server\bin\Debug\HtmlAgilityPack.xml

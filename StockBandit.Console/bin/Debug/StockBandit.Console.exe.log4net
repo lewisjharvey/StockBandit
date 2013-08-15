@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<log4net>
+    <root>
+        <level value="ALL" />
+        <appender-ref ref="RollingLogFileAppender" />
+        <appender-ref ref="ColoredConsoleAppender"/>
+    </root>
+    <appender name="RollingLogFileAppender" type="log4net.Appender.RollingFileAppender">
+        <file value="Logs\StockBandit.Console.Log" />
+        <appendToFile value="true" />
+        <datePattern value="yyyyMMdd'.log'" />
+        <rollingStyle value="Date" />
+        <lockingModel type="log4net.Appender.FileAppender+MinimalLock" />
+        <staticLogFileName value="false" />
+        <layout type="log4net.Layout.PatternLayout">
+            <conversionPattern value="%date [%thread] %-5level %logger - %message%newline" />
+        </layout>
+        <filter type="log4net.Filter.LevelRangeFilter">
+            <acceptOnMatch value="true" />
+            <levelMin value="DEBUG" />
+          <!--<levelMin value="INFO" />-->
+          <levelMax value="FATAL" />
+        </filter>
+    </appender>
+    <appender name="ColoredConsoleAppender" type="log4net.Appender.ColoredConsoleAppender">
+        <mapping>
+            <level value="ERROR" />
+            <foreColor value="White" />
+            <backColor value="Red, HighIntensity" />
+        </mapping>
+        <layout type="log4net.Layout.PatternLayout">
+            <conversionPattern value="%date [%thread] %-5level %logger - %message%newline" />
+        </layout>
+        <filter type="log4net.Filter.LevelRangeFilter">
+            <acceptOnMatch value="true" />
+            <levelMin value="DEBUG" />
+            <levelMax value="FATAL" />
+        </filter>
+    </appender>
+</log4net>

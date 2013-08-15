@@ -1,0 +1,59 @@
+2013-03-18 09:15:36,202 [10] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-18 09:15:36,213 [10] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-18 09:15:36,217 [10] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-18 09:15:38,621 [10] FATAL StockBandit.Server.StockServer - Error starting server - System.ServiceModel.AddressAlreadyInUseException: There is already a listener on IP endpoint 0.0.0.0:8000.  Make sure that you are not trying to use this endpoint multiple times in your application and that there are no other applications listening on this endpoint. ---> System.Net.Sockets.SocketException: Only one usage of each socket address (protocol/network address/port) is normally permitted
+   at System.Net.Sockets.Socket.DoBind(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.Sockets.Socket.Bind(EndPoint localEP)
+   at System.ServiceModel.Channels.SocketConnectionListener.Listen()
+   --- End of inner exception stack trace ---
+   at System.ServiceModel.Channels.SocketConnectionListener.Listen()
+   at System.ServiceModel.Channels.BufferedConnectionListener.Listen()
+   at System.ServiceModel.Channels.ConnectionAcceptor.StartAccepting()
+   at System.ServiceModel.Channels.ConnectionDemuxer.StartDemuxing(Action`1 viaDelegate)
+   at System.ServiceModel.Channels.ConnectionDemuxer.StartDemuxing()
+   at System.ServiceModel.Channels.ExclusiveTcpTransportManager.OnOpen()
+   at System.ServiceModel.Channels.TransportManager.Open(TransportChannelListener channelListener)
+   at System.ServiceModel.Channels.TransportManagerContainer.Open(SelectTransportManagersCallback selectTransportManagerCallback)
+   at System.ServiceModel.Channels.TransportChannelListener.OnOpen(TimeSpan timeout)
+   at System.ServiceModel.Channels.ConnectionOrientedTransportChannelListener.OnOpen(TimeSpan timeout)
+   at System.ServiceModel.Channels.TcpChannelListener`2.OnOpen(TimeSpan timeout)
+   at System.ServiceModel.Channels.CommunicationObject.Open(TimeSpan timeout)
+   at System.ServiceModel.Dispatcher.ChannelDispatcher.OnOpen(TimeSpan timeout)
+   at System.ServiceModel.Channels.CommunicationObject.Open(TimeSpan timeout)
+   at System.ServiceModel.ServiceHostBase.OnOpen(TimeSpan timeout)
+   at System.ServiceModel.Channels.CommunicationObject.Open(TimeSpan timeout)
+   at System.ServiceModel.Channels.CommunicationObject.Open()
+   at StockBandit.Server.StockServer.StartServer() in D:\code\StockBandit\StockBandit.Server\StockServer.cs:line 67
+2013-03-18 09:15:51,308 [10] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-18 09:15:51,320 [10] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-18 09:15:51,324 [10] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-18 09:15:53,042 [10] FATAL StockBandit.Server.StockServer - Error starting server - System.ServiceModel.AddressAlreadyInUseException: There is already a listener on IP endpoint 0.0.0.0:8000.  Make sure that you are not trying to use this endpoint multiple times in your application and that there are no other applications listening on this endpoint. ---> System.Net.Sockets.SocketException: Only one usage of each socket address (protocol/network address/port) is normally permitted
+   at System.Net.Sockets.Socket.DoBind(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.Sockets.Socket.Bind(EndPoint localEP)
+   at System.ServiceModel.Channels.SocketConnectionListener.Listen()
+   --- End of inner exception stack trace ---
+   at System.ServiceModel.Channels.SocketConnectionListener.Listen()
+   at System.ServiceModel.Channels.BufferedConnectionListener.Listen()
+   at System.ServiceModel.Channels.ConnectionAcceptor.StartAccepting()
+   at System.ServiceModel.Channels.ConnectionDemuxer.StartDemuxing(Action`1 viaDelegate)
+   at System.ServiceModel.Channels.ConnectionDemuxer.StartDemuxing()
+   at System.ServiceModel.Channels.ExclusiveTcpTransportManager.OnOpen()
+   at System.ServiceModel.Channels.TransportManager.Open(TransportChannelListener channelListener)
+   at System.ServiceModel.Channels.TransportManagerContainer.Open(SelectTransportManagersCallback selectTransportManagerCallback)
+   at System.ServiceModel.Channels.TransportChannelListener.OnOpen(TimeSpan timeout)
+   at System.ServiceModel.Channels.ConnectionOrientedTransportChannelListener.OnOpen(TimeSpan timeout)
+   at System.ServiceModel.Channels.TcpChannelListener`2.OnOpen(TimeSpan timeout)
+   at System.ServiceModel.Channels.CommunicationObject.Open(TimeSpan timeout)
+   at System.ServiceModel.Dispatcher.ChannelDispatcher.OnOpen(TimeSpan timeout)
+   at System.ServiceModel.Channels.CommunicationObject.Open(TimeSpan timeout)
+   at System.ServiceModel.ServiceHostBase.OnOpen(TimeSpan timeout)
+   at System.ServiceModel.Channels.CommunicationObject.Open(TimeSpan timeout)
+   at System.ServiceModel.Channels.CommunicationObject.Open()
+   at StockBandit.Server.StockServer.StartServer() in D:\code\StockBandit\StockBandit.Server\StockServer.cs:line 67
+2013-03-18 09:16:14,275 [9] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-18 09:16:14,290 [9] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-18 09:16:14,295 [9] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-18 09:16:15,140 [9] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-18 09:16:15,143 [9] INFO  StockBandit.Console.Program - **************** Server Started ********************
+2013-03-18 09:16:23,043 [15] INFO  StockBandit.Server.EmailQueue - Email sent: Stock Bandit Server Started
+2013-03-18 09:56:26,453 [15] INFO  StockBandit.Server.EmailQueue - Email sent: POSSIBLE BUY ACTION (LON:PFD)

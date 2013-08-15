@@ -1,0 +1,400 @@
+2013-03-08 08:07:00,560 [9] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-08 08:07:00,583 [9] INFO  StockBandit.Console.Program - Service Version: 2.0.0.2656
+2013-03-08 08:07:00,591 [9] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-08 08:07:00,641 [9] INFO  StockBandit.Console.Program - **************** Server Started ********************
+2013-03-08 08:07:24,351 [9] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-08 08:07:24,362 [9] INFO  StockBandit.Console.Program - Service Version: 2.0.0.2656
+2013-03-08 08:07:24,367 [9] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-08 08:07:29,591 [9] INFO  StockBandit.Console.Program - **************** Server Started ********************
+2013-03-08 08:07:58,935 [9] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-08 08:07:58,946 [9] INFO  StockBandit.Console.Program - Service Version: 2.0.0.2656
+2013-03-08 08:07:58,950 [9] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-08 08:08:00,982 [9] INFO  StockBandit.Console.Program - **************** Server Started ********************
+2013-03-08 08:08:22,001 [12] INFO  StockBandit.Server.EmailQueue - Email sent: Stock Bandit Server Started
+2013-03-08 10:46:30,801 [8] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-08 10:46:30,815 [8] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-08 10:46:30,820 [8] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-08 10:46:30,825 [8] ERROR StockBandit.Console.Program - {The StockCodes configuration setting is not set.}
+2013-03-08 10:46:49,253 [7] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-08 10:46:49,265 [7] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-08 10:46:49,270 [7] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-08 10:46:49,760 [7] FATAL StockBandit.Server.StockServer - Error starting server - System.Net.WebException: The remote server returned an error: (400) Bad Request.
+   at System.Net.HttpWebRequest.GetResponse()
+   at System.Xml.XmlDownloadManager.GetNonFileStream(Uri uri, ICredentials credentials, IWebProxy proxy, RequestCachePolicy cachePolicy)
+   at System.Xml.XmlDownloadManager.GetStream(Uri uri, ICredentials credentials, IWebProxy proxy, RequestCachePolicy cachePolicy)
+   at System.Xml.XmlUrlResolver.GetEntity(Uri absoluteUri, String role, Type ofObjectToReturn)
+   at System.Xml.XmlReaderSettings.CreateReader(String inputUri, XmlParserContext inputContext)
+   at System.Xml.XmlReader.Create(String inputUri, XmlReaderSettings settings, XmlParserContext inputContext)
+   at System.Xml.Linq.XDocument.Load(String uri, LoadOptions options)
+   at System.Xml.Linq.XDocument.Load(String uri)
+   at StockBandit.Server.YahooStockEngine.Fetch(ObservableCollection`1 quotes) in D:\code\StockBandit\StockBandit.Server\YahooStockEngine.cs:line 33
+   at StockBandit.Server.StockServer.StartServer() in D:\code\StockBandit\StockBandit.Server\StockServer.cs:line 61
+2013-03-08 10:47:07,940 [10] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-08 10:47:07,953 [10] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-08 10:47:07,959 [10] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-08 10:49:57,484 [9] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-08 10:49:57,497 [9] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-08 10:49:57,502 [9] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-08 10:50:23,917 [10] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-08 10:50:23,930 [10] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-08 10:50:23,935 [10] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-08 10:51:05,933 [10] INFO  StockBandit.Console.Program - **************** Server Started ********************
+2013-03-08 10:51:15,309 [13] INFO  StockBandit.Server.EmailQueue - Email sent: Stock Bandit Server Started
+2013-03-08 10:52:10,164 [9] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-08 10:52:10,179 [9] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-08 10:52:10,185 [9] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-08 10:54:14,609 [9] INFO  StockBandit.Console.Program - **************** Server Started ********************
+2013-03-08 10:54:18,391 [9] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-08 10:54:18,404 [9] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-08 10:54:18,409 [9] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-08 11:00:37,362 [8] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-08 11:00:37,378 [8] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-08 11:00:37,383 [8] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-08 11:00:37,435 [8] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-08 11:00:46,075 [8] INFO  StockBandit.Console.Program - **************** Server Started ********************
+2013-03-08 11:08:28,373 [8] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-08 11:08:28,387 [8] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-08 11:08:28,392 [8] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-08 11:08:28,449 [8] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-08 11:08:28,452 [8] INFO  StockBandit.Console.Program - **************** Server Started ********************
+2013-03-08 11:08:31,947 [11] INFO  StockBandit.Server.EmailQueue - Email sent: Stock Bandit Server Started
+2013-03-08 11:08:53,105 [9] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-08 11:08:53,118 [9] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-08 11:08:53,123 [9] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-08 11:08:53,151 [9] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-08 11:08:53,154 [9] INFO  StockBandit.Console.Program - **************** Server Started ********************
+2013-03-08 11:08:56,533 [12] INFO  StockBandit.Server.EmailQueue - Email sent: Stock Bandit Server Started
+2013-03-08 11:09:56,436 [8] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-08 11:09:56,451 [8] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-08 11:09:56,456 [8] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-08 11:09:56,510 [8] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-08 11:09:56,514 [8] INFO  StockBandit.Console.Program - **************** Server Started ********************
+2013-03-08 11:10:00,351 [11] INFO  StockBandit.Server.EmailQueue - Email sent: Stock Bandit Server Started
+2013-03-08 11:34:02,819 [7] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-08 11:34:02,836 [7] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-08 11:34:02,843 [7] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-08 11:34:02,906 [7] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-08 11:34:02,910 [7] INFO  StockBandit.Console.Program - **************** Server Started ********************
+2013-03-08 11:34:17,051 [10] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-08 11:34:17,064 [10] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-08 11:34:17,070 [10] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-08 11:34:37,331 [10] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-08 11:34:37,338 [10] INFO  StockBandit.Console.Program - **************** Server Started ********************
+2013-03-08 11:34:56,860 [10] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-08 11:34:56,874 [10] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-08 11:34:56,881 [10] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-08 11:34:59,051 [10] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-08 11:34:59,059 [10] INFO  StockBandit.Console.Program - **************** Server Started ********************
+2013-03-08 11:35:45,678 [9] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-08 11:35:45,693 [9] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-08 11:35:45,699 [9] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-08 11:35:46,557 [9] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-08 11:35:46,564 [9] INFO  StockBandit.Console.Program - **************** Server Started ********************
+2013-03-08 11:37:05,763 [9] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-08 11:37:05,776 [9] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-08 11:37:05,782 [9] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-08 11:37:08,291 [9] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-08 11:37:08,299 [9] INFO  StockBandit.Console.Program - **************** Server Started ********************
+2013-03-08 11:37:26,335 [12] INFO  StockBandit.Server.EmailQueue - Email sent: Stock Bandit Server Started
+2013-03-08 11:40:59,510 [10] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-08 11:40:59,522 [10] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-08 11:40:59,528 [10] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-08 11:40:59,560 [10] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-08 11:40:59,564 [10] INFO  StockBandit.Console.Program - **************** Server Started ********************
+2013-03-08 11:41:09,906 [10] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-08 11:41:09,919 [10] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-08 11:41:09,924 [10] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-08 11:41:09,957 [10] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-08 11:41:09,962 [10] INFO  StockBandit.Console.Program - **************** Server Started ********************
+2013-03-08 11:41:13,322 [13] INFO  StockBandit.Server.EmailQueue - Email sent: Stock Bandit Server Started
+2013-03-08 11:41:37,254 [10] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-08 11:41:37,268 [10] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-08 11:41:37,273 [10] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-08 11:41:37,304 [10] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-08 11:41:37,309 [10] INFO  StockBandit.Console.Program - **************** Server Started ********************
+2013-03-08 11:41:40,407 [13] INFO  StockBandit.Server.EmailQueue - Email sent: Stock Bandit Server Started
+2013-03-08 12:02:03,296 [8] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-08 12:02:03,311 [8] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-08 12:02:03,317 [8] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-08 12:02:03,383 [8] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-08 12:02:03,388 [8] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-08 12:02:03,391 [8] INFO  StockBandit.Console.Program - **************** Server Started ********************
+2013-03-08 12:02:06,845 [11] INFO  StockBandit.Server.EmailQueue - Email sent: Stock Bandit Server Started
+2013-03-08 12:05:34,014 [8] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-08 12:05:34,029 [8] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-08 12:05:34,035 [8] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-08 12:05:34,102 [8] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-08 12:05:34,105 [8] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-08 12:05:34,109 [8] INFO  StockBandit.Console.Program - **************** Server Started ********************
+2013-03-08 12:05:34,529 [12] ERROR StockBandit.Server.StockServer - Error in PriceAnalysisTimerElapsed
+System.Net.WebException: The remote server returned an error: (400) Bad Request.
+   at System.Net.HttpWebRequest.GetResponse()
+   at System.Xml.XmlDownloadManager.GetNonFileStream(Uri uri, ICredentials credentials, IWebProxy proxy, RequestCachePolicy cachePolicy)
+   at System.Xml.XmlDownloadManager.GetStream(Uri uri, ICredentials credentials, IWebProxy proxy, RequestCachePolicy cachePolicy)
+   at System.Xml.XmlUrlResolver.GetEntity(Uri absoluteUri, String role, Type ofObjectToReturn)
+   at System.Xml.XmlReaderSettings.CreateReader(String inputUri, XmlParserContext inputContext)
+   at System.Xml.XmlReader.Create(String inputUri, XmlReaderSettings settings, XmlParserContext inputContext)
+   at System.Xml.Linq.XDocument.Load(String uri, LoadOptions options)
+   at System.Xml.Linq.XDocument.Load(String uri)
+   at StockBandit.Server.YahooStockEngine.Fetch(ObservableCollection`1 quotes) in D:\code\StockBandit\StockBandit.Server\YahooStockEngine.cs:line 33
+   at StockBandit.Server.StockServer.PriceFetchTimerElapsed() in D:\code\StockBandit\StockBandit.Server\StockServer.cs:line 156
+2013-03-08 12:05:38,046 [11] INFO  StockBandit.Server.EmailQueue - Email sent: Stock Bandit Server Started
+2013-03-08 12:05:39,275 [13] ERROR StockBandit.Server.StockServer - Error in PriceAnalysisTimerElapsed
+System.Net.WebException: The remote server returned an error: (400) Bad Request.
+   at System.Net.HttpWebRequest.GetResponse()
+   at System.Xml.XmlDownloadManager.GetNonFileStream(Uri uri, ICredentials credentials, IWebProxy proxy, RequestCachePolicy cachePolicy)
+   at System.Xml.XmlDownloadManager.GetStream(Uri uri, ICredentials credentials, IWebProxy proxy, RequestCachePolicy cachePolicy)
+   at System.Xml.XmlUrlResolver.GetEntity(Uri absoluteUri, String role, Type ofObjectToReturn)
+   at System.Xml.XmlReaderSettings.CreateReader(String inputUri, XmlParserContext inputContext)
+   at System.Xml.XmlReader.Create(String inputUri, XmlReaderSettings settings, XmlParserContext inputContext)
+   at System.Xml.Linq.XDocument.Load(String uri, LoadOptions options)
+   at System.Xml.Linq.XDocument.Load(String uri)
+   at StockBandit.Server.YahooStockEngine.Fetch(ObservableCollection`1 quotes) in D:\code\StockBandit\StockBandit.Server\YahooStockEngine.cs:line 33
+   at StockBandit.Server.StockServer.PriceFetchTimerElapsed() in D:\code\StockBandit\StockBandit.Server\StockServer.cs:line 156
+2013-03-08 12:05:44,274 [12] ERROR StockBandit.Server.StockServer - Error in PriceAnalysisTimerElapsed
+System.Net.WebException: The remote server returned an error: (400) Bad Request.
+   at System.Net.HttpWebRequest.GetResponse()
+   at System.Xml.XmlDownloadManager.GetNonFileStream(Uri uri, ICredentials credentials, IWebProxy proxy, RequestCachePolicy cachePolicy)
+   at System.Xml.XmlDownloadManager.GetStream(Uri uri, ICredentials credentials, IWebProxy proxy, RequestCachePolicy cachePolicy)
+   at System.Xml.XmlUrlResolver.GetEntity(Uri absoluteUri, String role, Type ofObjectToReturn)
+   at System.Xml.XmlReaderSettings.CreateReader(String inputUri, XmlParserContext inputContext)
+   at System.Xml.XmlReader.Create(String inputUri, XmlReaderSettings settings, XmlParserContext inputContext)
+   at System.Xml.Linq.XDocument.Load(String uri, LoadOptions options)
+   at System.Xml.Linq.XDocument.Load(String uri)
+   at StockBandit.Server.YahooStockEngine.Fetch(ObservableCollection`1 quotes) in D:\code\StockBandit\StockBandit.Server\YahooStockEngine.cs:line 33
+   at StockBandit.Server.StockServer.PriceFetchTimerElapsed() in D:\code\StockBandit\StockBandit.Server\StockServer.cs:line 156
+2013-03-08 12:05:49,306 [13] ERROR StockBandit.Server.StockServer - Error in PriceAnalysisTimerElapsed
+System.Net.WebException: The remote server returned an error: (400) Bad Request.
+   at System.Net.HttpWebRequest.GetResponse()
+   at System.Xml.XmlDownloadManager.GetNonFileStream(Uri uri, ICredentials credentials, IWebProxy proxy, RequestCachePolicy cachePolicy)
+   at System.Xml.XmlDownloadManager.GetStream(Uri uri, ICredentials credentials, IWebProxy proxy, RequestCachePolicy cachePolicy)
+   at System.Xml.XmlUrlResolver.GetEntity(Uri absoluteUri, String role, Type ofObjectToReturn)
+   at System.Xml.XmlReaderSettings.CreateReader(String inputUri, XmlParserContext inputContext)
+   at System.Xml.XmlReader.Create(String inputUri, XmlReaderSettings settings, XmlParserContext inputContext)
+   at System.Xml.Linq.XDocument.Load(String uri, LoadOptions options)
+   at System.Xml.Linq.XDocument.Load(String uri)
+   at StockBandit.Server.YahooStockEngine.Fetch(ObservableCollection`1 quotes) in D:\code\StockBandit\StockBandit.Server\YahooStockEngine.cs:line 33
+   at StockBandit.Server.StockServer.PriceFetchTimerElapsed() in D:\code\StockBandit\StockBandit.Server\StockServer.cs:line 156
+2013-03-08 12:05:58,330 [10] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-08 12:05:58,343 [10] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-08 12:05:58,348 [10] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-08 12:05:58,379 [10] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-08 12:05:58,383 [10] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-08 12:05:59,790 [10] INFO  StockBandit.Console.Program - **************** Server Started ********************
+2013-03-08 12:06:20,748 [13] INFO  StockBandit.Server.EmailQueue - Email sent: Stock Bandit Server Started
+2013-03-08 12:07:10,977 [9] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-08 12:07:10,990 [9] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-08 12:07:10,996 [9] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-08 12:07:11,028 [9] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-08 12:07:11,033 [9] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-08 12:07:11,037 [9] INFO  StockBandit.Console.Program - **************** Server Started ********************
+2013-03-08 12:07:14,840 [12] INFO  StockBandit.Server.EmailQueue - Email sent: Stock Bandit Server Started
+2013-03-08 12:37:24,922 [9] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-08 12:37:24,937 [9] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-08 12:37:24,943 [9] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-08 12:37:25,012 [9] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-08 12:37:25,016 [9] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-08 12:37:25,020 [9] INFO  StockBandit.Console.Program - **************** Server Started ********************
+2013-03-08 12:37:28,795 [12] INFO  StockBandit.Server.EmailQueue - Email sent: Stock Bandit Server Started
+2013-03-08 12:37:47,129 [12] INFO  StockBandit.Server.EmailQueue - Email sent: POSSIBLE BUY ACTION (VODAFONE GRP[VOD.L])
+2013-03-08 12:37:52,518 [12] INFO  StockBandit.Server.EmailQueue - Email sent: POSSIBLE BUY ACTION (VODAFONE GRP[VOD.L])
+2013-03-08 12:37:56,848 [12] INFO  StockBandit.Server.EmailQueue - Email sent: POSSIBLE BUY ACTION (VODAFONE GRP[VOD.L])
+2013-03-08 12:38:02,503 [12] INFO  StockBandit.Server.EmailQueue - Email sent: POSSIBLE BUY ACTION (VODAFONE GRP[VOD.L])
+2013-03-08 12:38:08,777 [12] INFO  StockBandit.Server.EmailQueue - Email sent: POSSIBLE BUY ACTION (VODAFONE GRP[VOD.L])
+2013-03-08 12:38:12,514 [12] INFO  StockBandit.Server.EmailQueue - Email sent: POSSIBLE BUY ACTION (VODAFONE GRP[VOD.L])
+2013-03-08 12:38:16,791 [12] INFO  StockBandit.Server.EmailQueue - Email sent: POSSIBLE BUY ACTION (VODAFONE GRP[VOD.L])
+2013-03-08 12:38:22,092 [12] INFO  StockBandit.Server.EmailQueue - Email sent: POSSIBLE BUY ACTION (VODAFONE GRP[VOD.L])
+2013-03-08 12:38:27,407 [12] INFO  StockBandit.Server.EmailQueue - Email sent: POSSIBLE BUY ACTION (VODAFONE GRP[VOD.L])
+2013-03-08 12:38:31,727 [12] INFO  StockBandit.Server.EmailQueue - Email sent: POSSIBLE BUY ACTION (VODAFONE GRP[VOD.L])
+2013-03-08 12:38:37,020 [12] INFO  StockBandit.Server.EmailQueue - Email sent: POSSIBLE BUY ACTION (VODAFONE GRP[VOD.L])
+2013-03-08 12:38:40,318 [13] ERROR StockBandit.Server.StockServer - Error in PriceAnalysisTimerElapsed
+System.Net.WebException: The remote server returned an error: (400) Bad Request.
+   at System.Net.HttpWebRequest.GetResponse()
+   at System.Xml.XmlDownloadManager.GetNonFileStream(Uri uri, ICredentials credentials, IWebProxy proxy, RequestCachePolicy cachePolicy)
+   at System.Xml.XmlDownloadManager.GetStream(Uri uri, ICredentials credentials, IWebProxy proxy, RequestCachePolicy cachePolicy)
+   at System.Xml.XmlUrlResolver.GetEntity(Uri absoluteUri, String role, Type ofObjectToReturn)
+   at System.Xml.XmlReaderSettings.CreateReader(String inputUri, XmlParserContext inputContext)
+   at System.Xml.XmlReader.Create(String inputUri, XmlReaderSettings settings, XmlParserContext inputContext)
+   at System.Xml.Linq.XDocument.Load(String uri, LoadOptions options)
+   at System.Xml.Linq.XDocument.Load(String uri)
+   at StockBandit.Server.YahooStockEngine.Fetch(ObservableCollection`1 quotes) in D:\code\StockBandit\StockBandit.Server\YahooStockEngine.cs:line 33
+   at StockBandit.Server.StockServer.PriceFetchTimerElapsed() in D:\code\StockBandit\StockBandit.Server\StockServer.cs:line 170
+2013-03-08 12:38:42,552 [12] INFO  StockBandit.Server.EmailQueue - Email sent: POSSIBLE BUY ACTION (VODAFONE GRP[VOD.L])
+2013-03-08 12:38:45,272 [16] ERROR StockBandit.Server.StockServer - Error in PriceAnalysisTimerElapsed
+System.Net.WebException: The remote server returned an error: (400) Bad Request.
+   at System.Net.HttpWebRequest.GetResponse()
+   at System.Xml.XmlDownloadManager.GetNonFileStream(Uri uri, ICredentials credentials, IWebProxy proxy, RequestCachePolicy cachePolicy)
+   at System.Xml.XmlDownloadManager.GetStream(Uri uri, ICredentials credentials, IWebProxy proxy, RequestCachePolicy cachePolicy)
+   at System.Xml.XmlUrlResolver.GetEntity(Uri absoluteUri, String role, Type ofObjectToReturn)
+   at System.Xml.XmlReaderSettings.CreateReader(String inputUri, XmlParserContext inputContext)
+   at System.Xml.XmlReader.Create(String inputUri, XmlReaderSettings settings, XmlParserContext inputContext)
+   at System.Xml.Linq.XDocument.Load(String uri, LoadOptions options)
+   at System.Xml.Linq.XDocument.Load(String uri)
+   at StockBandit.Server.YahooStockEngine.Fetch(ObservableCollection`1 quotes) in D:\code\StockBandit\StockBandit.Server\YahooStockEngine.cs:line 33
+   at StockBandit.Server.StockServer.PriceFetchTimerElapsed() in D:\code\StockBandit\StockBandit.Server\StockServer.cs:line 170
+2013-03-08 12:38:46,895 [12] INFO  StockBandit.Server.EmailQueue - Email sent: POSSIBLE BUY ACTION (VODAFONE GRP[VOD.L])
+2013-03-08 12:38:50,284 [14] ERROR StockBandit.Server.StockServer - Error in PriceAnalysisTimerElapsed
+System.Net.WebException: The remote server returned an error: (400) Bad Request.
+   at System.Net.HttpWebRequest.GetResponse()
+   at System.Xml.XmlDownloadManager.GetNonFileStream(Uri uri, ICredentials credentials, IWebProxy proxy, RequestCachePolicy cachePolicy)
+   at System.Xml.XmlDownloadManager.GetStream(Uri uri, ICredentials credentials, IWebProxy proxy, RequestCachePolicy cachePolicy)
+   at System.Xml.XmlUrlResolver.GetEntity(Uri absoluteUri, String role, Type ofObjectToReturn)
+   at System.Xml.XmlReaderSettings.CreateReader(String inputUri, XmlParserContext inputContext)
+   at System.Xml.XmlReader.Create(String inputUri, XmlReaderSettings settings, XmlParserContext inputContext)
+   at System.Xml.Linq.XDocument.Load(String uri, LoadOptions options)
+   at System.Xml.Linq.XDocument.Load(String uri)
+   at StockBandit.Server.YahooStockEngine.Fetch(ObservableCollection`1 quotes) in D:\code\StockBandit\StockBandit.Server\YahooStockEngine.cs:line 33
+   at StockBandit.Server.StockServer.PriceFetchTimerElapsed() in D:\code\StockBandit\StockBandit.Server\StockServer.cs:line 170
+2013-03-08 12:38:52,237 [12] INFO  StockBandit.Server.EmailQueue - Email sent: POSSIBLE BUY ACTION (VODAFONE GRP[VOD.L])
+2013-03-08 12:38:55,289 [13] ERROR StockBandit.Server.StockServer - Error in PriceAnalysisTimerElapsed
+System.Net.WebException: The remote server returned an error: (400) Bad Request.
+   at System.Net.HttpWebRequest.GetResponse()
+   at System.Xml.XmlDownloadManager.GetNonFileStream(Uri uri, ICredentials credentials, IWebProxy proxy, RequestCachePolicy cachePolicy)
+   at System.Xml.XmlDownloadManager.GetStream(Uri uri, ICredentials credentials, IWebProxy proxy, RequestCachePolicy cachePolicy)
+   at System.Xml.XmlUrlResolver.GetEntity(Uri absoluteUri, String role, Type ofObjectToReturn)
+   at System.Xml.XmlReaderSettings.CreateReader(String inputUri, XmlParserContext inputContext)
+   at System.Xml.XmlReader.Create(String inputUri, XmlReaderSettings settings, XmlParserContext inputContext)
+   at System.Xml.Linq.XDocument.Load(String uri, LoadOptions options)
+   at System.Xml.Linq.XDocument.Load(String uri)
+   at StockBandit.Server.YahooStockEngine.Fetch(ObservableCollection`1 quotes) in D:\code\StockBandit\StockBandit.Server\YahooStockEngine.cs:line 33
+   at StockBandit.Server.StockServer.PriceFetchTimerElapsed() in D:\code\StockBandit\StockBandit.Server\StockServer.cs:line 170
+2013-03-08 12:38:57,575 [12] INFO  StockBandit.Server.EmailQueue - Email sent: POSSIBLE BUY ACTION (VODAFONE GRP[VOD.L])
+2013-03-08 12:39:00,295 [16] ERROR StockBandit.Server.StockServer - Error in PriceAnalysisTimerElapsed
+System.Net.WebException: The remote server returned an error: (400) Bad Request.
+   at System.Net.HttpWebRequest.GetResponse()
+   at System.Xml.XmlDownloadManager.GetNonFileStream(Uri uri, ICredentials credentials, IWebProxy proxy, RequestCachePolicy cachePolicy)
+   at System.Xml.XmlDownloadManager.GetStream(Uri uri, ICredentials credentials, IWebProxy proxy, RequestCachePolicy cachePolicy)
+   at System.Xml.XmlUrlResolver.GetEntity(Uri absoluteUri, String role, Type ofObjectToReturn)
+   at System.Xml.XmlReaderSettings.CreateReader(String inputUri, XmlParserContext inputContext)
+   at System.Xml.XmlReader.Create(String inputUri, XmlReaderSettings settings, XmlParserContext inputContext)
+   at System.Xml.Linq.XDocument.Load(String uri, LoadOptions options)
+   at System.Xml.Linq.XDocument.Load(String uri)
+   at StockBandit.Server.YahooStockEngine.Fetch(ObservableCollection`1 quotes) in D:\code\StockBandit\StockBandit.Server\YahooStockEngine.cs:line 33
+   at StockBandit.Server.StockServer.PriceFetchTimerElapsed() in D:\code\StockBandit\StockBandit.Server\StockServer.cs:line 170
+2013-03-08 12:39:01,885 [12] INFO  StockBandit.Server.EmailQueue - Email sent: POSSIBLE BUY ACTION (VODAFONE GRP[VOD.L])
+2013-03-08 16:43:51,819 [8] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-08 16:43:51,834 [8] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-08 16:43:51,841 [8] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-08 16:45:21,016 [10] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-08 16:45:21,033 [10] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-08 16:45:21,040 [10] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-08 16:45:21,758 [10] FATAL StockBandit.Server.StockServer - Error starting server - System.InvalidOperationException: Service 'StockBandit.Server.BanditService' has zero application (non-infrastructure) endpoints. This might be because no configuration file was found for your application, or because no service element matching the service name could be found in the configuration file, or because no endpoints were defined in the service element.
+   at System.ServiceModel.Description.DispatcherBuilder.EnsureThereAreApplicationEndpoints(ServiceDescription description)
+   at System.ServiceModel.Description.DispatcherBuilder.InitializeServiceHost(ServiceDescription description, ServiceHostBase serviceHost)
+   at System.ServiceModel.ServiceHostBase.InitializeRuntime()
+   at System.ServiceModel.ServiceHostBase.OnBeginOpen()
+   at System.ServiceModel.ServiceHostBase.OnOpen(TimeSpan timeout)
+   at System.ServiceModel.Channels.CommunicationObject.Open(TimeSpan timeout)
+   at System.ServiceModel.Channels.CommunicationObject.Open()
+   at StockBandit.Server.StockServer.StartServer() in D:\code\StockBandit\StockBandit.Server\StockServer.cs:line 66
+2013-03-08 16:47:30,689 [8] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-08 16:47:30,702 [8] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-08 16:47:30,708 [8] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-08 16:47:31,978 [8] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-08 16:47:31,984 [8] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-08 16:47:31,988 [8] INFO  StockBandit.Console.Program - **************** Server Started ********************
+2013-03-08 16:55:34,932 [10] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-08 16:55:34,947 [10] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-08 16:55:34,953 [10] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-08 16:55:35,759 [10] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-08 16:55:35,765 [10] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-08 16:55:35,776 [10] INFO  StockBandit.Console.Program - **************** Server Started ********************
+2013-03-08 16:55:39,772 [16] INFO  StockBandit.Server.EmailQueue - Email sent: Stock Bandit Server Started
+2013-03-08 16:55:45,968 [17] ERROR StockBandit.Server.StockServer - Error in PriceAnalysisTimerElapsed
+System.Net.WebException: The remote server returned an error: (400) Bad Request.
+   at System.Net.HttpWebRequest.GetResponse()
+   at System.Xml.XmlDownloadManager.GetNonFileStream(Uri uri, ICredentials credentials, IWebProxy proxy, RequestCachePolicy cachePolicy)
+   at System.Xml.XmlDownloadManager.GetStream(Uri uri, ICredentials credentials, IWebProxy proxy, RequestCachePolicy cachePolicy)
+   at System.Xml.XmlUrlResolver.GetEntity(Uri absoluteUri, String role, Type ofObjectToReturn)
+   at System.Xml.XmlReaderSettings.CreateReader(String inputUri, XmlParserContext inputContext)
+   at System.Xml.XmlReader.Create(String inputUri, XmlReaderSettings settings, XmlParserContext inputContext)
+   at System.Xml.Linq.XDocument.Load(String uri, LoadOptions options)
+   at System.Xml.Linq.XDocument.Load(String uri)
+   at StockBandit.Server.YahooStockEngine.Fetch(ObservableCollection`1 quotes) in D:\code\StockBandit\StockBandit.Server\YahooStockEngine.cs:line 33
+   at StockBandit.Server.StockServer.PriceFetchTimerElapsed() in D:\code\StockBandit\StockBandit.Server\StockServer.cs:line 179
+2013-03-08 16:55:51,012 [21] ERROR StockBandit.Server.StockServer - Error in PriceAnalysisTimerElapsed
+System.Net.WebException: The remote server returned an error: (400) Bad Request.
+   at System.Net.HttpWebRequest.GetResponse()
+   at System.Xml.XmlDownloadManager.GetNonFileStream(Uri uri, ICredentials credentials, IWebProxy proxy, RequestCachePolicy cachePolicy)
+   at System.Xml.XmlDownloadManager.GetStream(Uri uri, ICredentials credentials, IWebProxy proxy, RequestCachePolicy cachePolicy)
+   at System.Xml.XmlUrlResolver.GetEntity(Uri absoluteUri, String role, Type ofObjectToReturn)
+   at System.Xml.XmlReaderSettings.CreateReader(String inputUri, XmlParserContext inputContext)
+   at System.Xml.XmlReader.Create(String inputUri, XmlReaderSettings settings, XmlParserContext inputContext)
+   at System.Xml.Linq.XDocument.Load(String uri, LoadOptions options)
+   at System.Xml.Linq.XDocument.Load(String uri)
+   at StockBandit.Server.YahooStockEngine.Fetch(ObservableCollection`1 quotes) in D:\code\StockBandit\StockBandit.Server\YahooStockEngine.cs:line 33
+   at StockBandit.Server.StockServer.PriceFetchTimerElapsed() in D:\code\StockBandit\StockBandit.Server\StockServer.cs:line 179
+2013-03-08 16:55:55,951 [17] ERROR StockBandit.Server.StockServer - Error in PriceAnalysisTimerElapsed
+System.Net.WebException: The remote server returned an error: (400) Bad Request.
+   at System.Net.HttpWebRequest.GetResponse()
+   at System.Xml.XmlDownloadManager.GetNonFileStream(Uri uri, ICredentials credentials, IWebProxy proxy, RequestCachePolicy cachePolicy)
+   at System.Xml.XmlDownloadManager.GetStream(Uri uri, ICredentials credentials, IWebProxy proxy, RequestCachePolicy cachePolicy)
+   at System.Xml.XmlUrlResolver.GetEntity(Uri absoluteUri, String role, Type ofObjectToReturn)
+   at System.Xml.XmlReaderSettings.CreateReader(String inputUri, XmlParserContext inputContext)
+   at System.Xml.XmlReader.Create(String inputUri, XmlReaderSettings settings, XmlParserContext inputContext)
+   at System.Xml.Linq.XDocument.Load(String uri, LoadOptions options)
+   at System.Xml.Linq.XDocument.Load(String uri)
+   at StockBandit.Server.YahooStockEngine.Fetch(ObservableCollection`1 quotes) in D:\code\StockBandit\StockBandit.Server\YahooStockEngine.cs:line 33
+   at StockBandit.Server.StockServer.PriceFetchTimerElapsed() in D:\code\StockBandit\StockBandit.Server\StockServer.cs:line 179
+2013-03-08 16:56:00,939 [18] ERROR StockBandit.Server.StockServer - Error in PriceAnalysisTimerElapsed
+System.Net.WebException: The remote server returned an error: (400) Bad Request.
+   at System.Net.HttpWebRequest.GetResponse()
+   at System.Xml.XmlDownloadManager.GetNonFileStream(Uri uri, ICredentials credentials, IWebProxy proxy, RequestCachePolicy cachePolicy)
+   at System.Xml.XmlDownloadManager.GetStream(Uri uri, ICredentials credentials, IWebProxy proxy, RequestCachePolicy cachePolicy)
+   at System.Xml.XmlUrlResolver.GetEntity(Uri absoluteUri, String role, Type ofObjectToReturn)
+   at System.Xml.XmlReaderSettings.CreateReader(String inputUri, XmlParserContext inputContext)
+   at System.Xml.XmlReader.Create(String inputUri, XmlReaderSettings settings, XmlParserContext inputContext)
+   at System.Xml.Linq.XDocument.Load(String uri, LoadOptions options)
+   at System.Xml.Linq.XDocument.Load(String uri)
+   at StockBandit.Server.YahooStockEngine.Fetch(ObservableCollection`1 quotes) in D:\code\StockBandit\StockBandit.Server\YahooStockEngine.cs:line 33
+   at StockBandit.Server.StockServer.PriceFetchTimerElapsed() in D:\code\StockBandit\StockBandit.Server\StockServer.cs:line 179
+2013-03-08 16:56:05,950 [17] ERROR StockBandit.Server.StockServer - Error in PriceAnalysisTimerElapsed
+System.Net.WebException: The remote server returned an error: (400) Bad Request.
+   at System.Net.HttpWebRequest.GetResponse()
+   at System.Xml.XmlDownloadManager.GetNonFileStream(Uri uri, ICredentials credentials, IWebProxy proxy, RequestCachePolicy cachePolicy)
+   at System.Xml.XmlDownloadManager.GetStream(Uri uri, ICredentials credentials, IWebProxy proxy, RequestCachePolicy cachePolicy)
+   at System.Xml.XmlUrlResolver.GetEntity(Uri absoluteUri, String role, Type ofObjectToReturn)
+   at System.Xml.XmlReaderSettings.CreateReader(String inputUri, XmlParserContext inputContext)
+   at System.Xml.XmlReader.Create(String inputUri, XmlReaderSettings settings, XmlParserContext inputContext)
+   at System.Xml.Linq.XDocument.Load(String uri, LoadOptions options)
+   at System.Xml.Linq.XDocument.Load(String uri)
+   at StockBandit.Server.YahooStockEngine.Fetch(ObservableCollection`1 quotes) in D:\code\StockBandit\StockBandit.Server\YahooStockEngine.cs:line 33
+   at StockBandit.Server.StockServer.PriceFetchTimerElapsed() in D:\code\StockBandit\StockBandit.Server\StockServer.cs:line 179
+2013-03-08 16:56:24,887 [21] ERROR StockBandit.Server.StockServer - Error in PriceAnalysisTimerElapsed
+System.Net.WebException: The remote server returned an error: (400) Bad Request.
+   at System.Net.HttpWebRequest.GetResponse()
+   at System.Xml.XmlDownloadManager.GetNonFileStream(Uri uri, ICredentials credentials, IWebProxy proxy, RequestCachePolicy cachePolicy)
+   at System.Xml.XmlDownloadManager.GetStream(Uri uri, ICredentials credentials, IWebProxy proxy, RequestCachePolicy cachePolicy)
+   at System.Xml.XmlUrlResolver.GetEntity(Uri absoluteUri, String role, Type ofObjectToReturn)
+   at System.Xml.XmlReaderSettings.CreateReader(String inputUri, XmlParserContext inputContext)
+   at System.Xml.XmlReader.Create(String inputUri, XmlReaderSettings settings, XmlParserContext inputContext)
+   at System.Xml.Linq.XDocument.Load(String uri, LoadOptions options)
+   at System.Xml.Linq.XDocument.Load(String uri)
+   at StockBandit.Server.YahooStockEngine.Fetch(ObservableCollection`1 quotes) in D:\code\StockBandit\StockBandit.Server\YahooStockEngine.cs:line 33
+   at StockBandit.Server.StockServer.PriceFetchTimerElapsed() in D:\code\StockBandit\StockBandit.Server\StockServer.cs:line 179
+2013-03-08 16:59:14,186 [18] ERROR StockBandit.Server.StockServer - Error in PriceAnalysisTimerElapsed
+System.Net.WebException: The remote server returned an error: (400) Bad Request.
+   at System.Net.HttpWebRequest.GetResponse()
+   at System.Xml.XmlDownloadManager.GetNonFileStream(Uri uri, ICredentials credentials, IWebProxy proxy, RequestCachePolicy cachePolicy)
+   at System.Xml.XmlDownloadManager.GetStream(Uri uri, ICredentials credentials, IWebProxy proxy, RequestCachePolicy cachePolicy)
+   at System.Xml.XmlUrlResolver.GetEntity(Uri absoluteUri, String role, Type ofObjectToReturn)
+   at System.Xml.XmlReaderSettings.CreateReader(String inputUri, XmlParserContext inputContext)
+   at System.Xml.XmlReader.Create(String inputUri, XmlReaderSettings settings, XmlParserContext inputContext)
+   at System.Xml.Linq.XDocument.Load(String uri, LoadOptions options)
+   at System.Xml.Linq.XDocument.Load(String uri)
+   at StockBandit.Server.YahooStockEngine.Fetch(ObservableCollection`1 quotes) in D:\code\StockBandit\StockBandit.Server\YahooStockEngine.cs:line 33
+   at StockBandit.Server.StockServer.PriceFetchTimerElapsed() in D:\code\StockBandit\StockBandit.Server\StockServer.cs:line 179
+2013-03-08 17:00:33,523 [9] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-08 17:00:33,541 [9] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-08 17:00:33,548 [9] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-08 17:00:34,302 [9] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-08 17:00:34,309 [9] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-08 17:00:36,661 [9] INFO  StockBandit.Console.Program - **************** Server Started ********************
+2013-03-08 17:00:39,991 [15] INFO  StockBandit.Server.EmailQueue - Email sent: Stock Bandit Server Started
+2013-03-08 17:01:37,602 [10] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-08 17:01:37,617 [10] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-08 17:01:37,623 [10] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-08 17:01:38,251 [10] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-08 17:01:38,256 [10] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-08 17:01:38,261 [10] INFO  StockBandit.Console.Program - **************** Server Started ********************
+2013-03-08 17:01:41,725 [16] INFO  StockBandit.Server.EmailQueue - Email sent: Stock Bandit Server Started

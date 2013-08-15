@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 11, 8.5" name="StockBandit">
+  <DataContextMoniker Name="/StockBanditDataContext" />
+  <nestedChildShapes>
+    <classShape Id="6245d44a-d93e-4240-8df7-6dbd97f22478" absoluteBounds="3.5, 0.875, 2, 1.5785953776041666">
+      <DataClassMoniker Name="/StockBanditDataContext/DailyPrice" />
+      <nestedChildShapes>
+        <elementListCompartment Id="c3d9e10c-64ad-4241-a17e-0f6c1b4ae0a4" absoluteBounds="3.515, 1.335, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="242dcbd2-ed28-4089-8402-65d7a2e65c48" absoluteBounds="0.75, 1.125, 2, 1.1939925130208338">
+      <DataClassMoniker Name="/StockBanditDataContext/Stock" />
+      <nestedChildShapes>
+        <elementListCompartment Id="53a851f0-6793-406a-a1cc-c421c9fe6378" absoluteBounds="0.765, 1.585, 1.9700000000000002, 0.63399251302083326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(2.75 : 1.72199625651042); (3.5 : 1.72199625651042)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/StockBanditDataContext/Stock/Stock_DailyPrice" />
+      <nodes>
+        <classShapeMoniker Id="242dcbd2-ed28-4089-8402-65d7a2e65c48" />
+        <classShapeMoniker Id="6245d44a-d93e-4240-8df7-6dbd97f22478" />
+      </nodes>
+    </associationConnector>
+  </nestedChildShapes>
+</ordesignerObjectsDiagram>

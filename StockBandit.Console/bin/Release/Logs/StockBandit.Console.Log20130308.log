@@ -1,0 +1,18 @@
+2013-03-08 17:27:44,730 [9] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-08 17:27:44,745 [9] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-08 17:27:44,749 [9] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-08 17:27:45,823 [9] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-08 17:27:45,826 [9] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-08 17:27:45,829 [9] INFO  StockBandit.Console.Program - **************** Server Started ********************
+2013-03-08 17:27:46,283 [15] ERROR StockBandit.Server.StockServer - Error in PriceAnalysisTimerElapsed
+System.Net.WebException: The remote server returned an error: (400) Bad Request.
+   at System.Net.HttpWebRequest.GetResponse()
+   at System.Xml.XmlDownloadManager.GetNonFileStream(Uri uri, ICredentials credentials, IWebProxy proxy, RequestCachePolicy cachePolicy)
+   at System.Xml.XmlDownloadManager.GetStream(Uri uri, ICredentials credentials, IWebProxy proxy, RequestCachePolicy cachePolicy)
+   at System.Xml.XmlUrlResolver.GetEntity(Uri absoluteUri, String role, Type ofObjectToReturn)
+   at System.Xml.XmlReaderSettings.CreateReader(String inputUri, XmlParserContext inputContext)
+   at System.Xml.XmlReader.Create(String inputUri, XmlReaderSettings settings, XmlParserContext inputContext)
+   at System.Xml.Linq.XDocument.Load(String uri, LoadOptions options)
+   at System.Xml.Linq.XDocument.Load(String uri)
+   at StockBandit.Server.YahooStockEngine.Fetch(ObservableCollection`1 quotes) in D:\code\StockBandit\StockBandit.Server\YahooStockEngine.cs:line 33
+   at StockBandit.Server.StockServer.PriceFetchTimerElapsed() in D:\code\StockBandit\StockBandit.Server\StockServer.cs:line 179

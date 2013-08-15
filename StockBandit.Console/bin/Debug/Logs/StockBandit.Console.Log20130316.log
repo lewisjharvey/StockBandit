@@ -1,0 +1,74 @@
+2013-03-16 08:10:30,313 [9] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-16 08:10:30,326 [9] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-16 08:10:30,330 [9] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-16 08:10:32,405 [9] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-16 08:10:32,407 [9] INFO  StockBandit.Console.Program - **************** Server Started ********************
+2013-03-16 08:10:41,800 [16] INFO  StockBandit.Server.EmailQueue - Email sent: Stock Bandit Server Started
+2013-03-16 08:13:17,047 [9] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-16 08:13:17,060 [9] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-16 08:13:17,065 [9] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-16 08:13:18,255 [9] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-16 08:13:18,258 [9] INFO  StockBandit.Console.Program - **************** Server Started ********************
+2013-03-16 08:13:21,616 [15] INFO  StockBandit.Server.EmailQueue - Email sent: Stock Bandit Server Started
+2013-03-16 09:21:51,994 [7] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-16 09:21:52,008 [7] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-16 09:21:52,012 [7] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-16 09:21:54,273 [7] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-16 09:21:54,276 [7] INFO  StockBandit.Console.Program - **************** Server Started ********************
+2013-03-16 09:21:57,757 [13] INFO  StockBandit.Server.EmailQueue - Email sent: Stock Bandit Server Started
+2013-03-16 09:30:20,059 [9] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-16 09:30:20,082 [9] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-16 09:30:20,086 [9] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-16 09:30:22,170 [9] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-16 09:30:22,174 [9] INFO  StockBandit.Console.Program - **************** Server Started ********************
+2013-03-16 09:30:34,512 [10] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-16 09:30:34,525 [10] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-16 09:30:34,529 [10] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-16 09:30:35,245 [10] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-16 09:30:35,248 [10] INFO  StockBandit.Console.Program - **************** Server Started ********************
+2013-03-16 09:30:40,886 [10] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-16 09:30:40,897 [10] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-16 09:30:40,901 [10] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-16 09:30:41,591 [10] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-16 09:30:41,594 [10] INFO  StockBandit.Console.Program - **************** Server Started ********************
+2013-03-16 09:30:44,905 [15] INFO  StockBandit.Server.EmailQueue - Email sent: Stock Bandit Server Started
+2013-03-16 09:32:52,991 [8] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-16 09:32:53,003 [8] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-16 09:32:53,007 [8] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-16 09:32:53,677 [8] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-16 09:32:53,680 [8] INFO  StockBandit.Console.Program - **************** Server Started ********************
+2013-03-16 09:32:57,172 [14] INFO  StockBandit.Server.EmailQueue - Email sent: Stock Bandit Server Started
+2013-03-16 09:34:09,518 [9] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-16 09:34:09,534 [9] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-16 09:34:09,538 [9] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-16 09:34:10,265 [9] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-16 09:34:10,269 [9] INFO  StockBandit.Console.Program - **************** Server Started ********************
+2013-03-16 09:34:13,877 [15] INFO  StockBandit.Server.EmailQueue - Email sent: Stock Bandit Server Started
+2013-03-16 09:39:54,211 [10] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-16 09:39:54,224 [10] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-16 09:39:54,230 [10] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-16 09:39:54,884 [10] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-16 09:39:54,888 [10] INFO  StockBandit.Console.Program - **************** Server Started ********************
+2013-03-16 09:39:58,287 [16] INFO  StockBandit.Server.EmailQueue - Email sent: Stock Bandit Server Started
+2013-03-16 09:47:21,590 [10] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-16 09:47:21,605 [10] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-16 09:47:21,611 [10] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-16 09:47:22,572 [10] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-16 09:47:22,575 [10] INFO  StockBandit.Console.Program - **************** Server Started ********************
+2013-03-16 09:47:26,622 [15] INFO  StockBandit.Server.EmailQueue - Email sent: Stock Bandit Server Started
+2013-03-16 09:47:54,539 [20] ERROR StockBandit.Server.StockServer - Error in PriceAnalysisTimerElapsed
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at StockBandit.Server.GoogleWebStockEngine.Fetch(ObservableCollection`1 quotes) in D:\code\StockBandit\StockBandit.Server\GoogleWebStockEngine.cs:line 51
+   at StockBandit.Server.StockServer.PriceFetchTimerElapsed() in D:\code\StockBandit\StockBandit.Server\StockServer.cs:line 128
+2013-03-16 09:48:00,296 [15] INFO  StockBandit.Server.EmailQueue - Email sent: System Error
+2013-03-16 09:48:36,163 [17] ERROR StockBandit.Server.StockServer - Error in PriceAnalysisTimerElapsed
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at StockBandit.Server.GoogleWebStockEngine.Fetch(ObservableCollection`1 quotes) in D:\code\StockBandit\StockBandit.Server\GoogleWebStockEngine.cs:line 51
+   at StockBandit.Server.StockServer.PriceFetchTimerElapsed() in D:\code\StockBandit\StockBandit.Server\StockServer.cs:line 128
+2013-03-16 09:48:40,256 [15] INFO  StockBandit.Server.EmailQueue - Email sent: System Error
+2013-03-16 09:58:12,506 [9] INFO  StockBandit.Console.Program - *********** Stock Bandit Server Console Started ***********
+2013-03-16 09:58:12,520 [9] INFO  StockBandit.Console.Program - Service Version: 1.0.0.0
+2013-03-16 09:58:12,526 [9] INFO  StockBandit.Console.Program - Running on HARTLEY (Microsoft Windows NT 6.1.7601 Service Pack 1)
+2013-03-16 09:58:15,195 [9] INFO  StockBandit.Server.StockServer - Started Position Reset Timer
+2013-03-16 09:58:15,200 [9] INFO  StockBandit.Console.Program - **************** Server Started ********************
+2013-03-16 09:58:31,900 [15] INFO  StockBandit.Server.EmailQueue - Email sent: Stock Bandit Server Started
