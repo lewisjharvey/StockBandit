@@ -1,6 +1,10 @@
 StockBandit
 ===========
 
-A tool that monitors stocks (once registered) to see if they exceed configurable period Bollinger Bands. Upon a variation enough to suggest a Buy or Sell, the system sends out email alerts.
+A tool that monitors stocks (once registered) mataching them against specific analysis models. Upon a movement to suggest a Buy or Sell, the system sends out email alerts.
 
-Author: Lewis Harvey (lewisjharvey@gmail.com)
+Currently supports:
+
+Bollinger Bands
+
+Author: Lewis Harvey (me@lewisjharvey.co.uk)
