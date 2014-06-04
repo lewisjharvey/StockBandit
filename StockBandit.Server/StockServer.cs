@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Linq;
 using System.ServiceModel;
+using StockBandit.Server.Analysis;
 
 namespace StockBandit.Server
 {
@@ -51,7 +52,9 @@ namespace StockBandit.Server
         private object semaphore = new object();
         private ServiceHost serviceHost;
         private GoogleWebStockEngine googleWebStockEngine;
+        private GoogleHistoricWebStockEngine googleHistoricWebStockEngine;
         private StockBanditDataContext dataContext;
+        private List<IModel> registeredModels;
 
         #region StartupProcedures
 
@@ -78,12 +81,16 @@ namespace StockBandit.Server
                 this.dataContext = new StockBanditDataContext(this.DatabaseConnectionString);
                 // Setup google for querying
                 this.googleWebStockEngine = new GoogleWebStockEngine();
+                this.googleHistoricWebStockEngine = new GoogleHistoricWebStockEngine();
 
                 foreach (string stockCode in this.dataContext.Stocks.Select(p => p.StockCode).ToList())
                 {
                     this.StockCodesList.Add(new Quote(stockCode));
                 }
 
+                // Get all the historical data and populate
+                PopulateHistoricPrices();
+                RegisterModels();
                 StartPriceFetchTimer();
             }
             catch (Exception ex)
@@ -92,6 +99,12 @@ namespace StockBandit.Server
                 return false;
             }
             return true;
+        }
+
+        private void RegisterModels()
+        {
+            this.registeredModels = new List<IModel>();
+            this.registeredModels.Add(new BollingerBandsModel(this.BandPeriod));
         }
 
         private void StartPriceFetchTimer()
@@ -131,45 +144,16 @@ namespace StockBandit.Server
                 // If different add to queue.
                 foreach (Quote stock in this.StockCodesList)
                 {
-                    // Find price for today
-                    DailyPrice todayPrice = this.dataContext.DailyPrices.FirstOrDefault(p => p.Date == DateTime.Now.Date && p.StockCode == stock.Symbol);
-                    if (todayPrice != null)
+                    DailyPrice currentPrice = InsertOrUpdateTodayPrice(stock);
+
+                    List<DailyPrice> historicPrices = this.dataContext.DailyPrices.Where(p => p.StockCode == stock.Symbol && p.Date > DateTime.Now.Date.Subtract(new TimeSpan(365, 0, 0, 0, 0)) && p.Date < DateTime.Now.Date).OrderByDescending(p => p.Date).ToList();
+
+                    foreach(IModel model in this.registeredModels)
                     {
-                        // We have a price from the standard price checker. Check the value ot see if different and update if it is.
-                        if (todayPrice.Price != stock.LastTradePrice && stock.LastTradePrice.HasValue)
-                        {
-                            todayPrice.Price = stock.LastTradePrice.Value;
-                        }
-                    }
-                    else
-                    {
-                        DailyPrice dailyPrice = new DailyPrice() { Date = DateTime.Now.Date, Price = stock.LastTradePrice.Value };
-                        dailyPrice.StockCode = stock.Symbol;
-                        this.dataContext.DailyPrices.InsertOnSubmit(dailyPrice);
-                    }
-
-                    this.dataContext.SubmitChanges();
-
-                    // Now we have a valid list of items, work out bands
-                    List<DailyPrice> dailyPrices = this.dataContext.DailyPrices.Where(p => p.StockCode == stock.Symbol).OrderByDescending(p => p.Date).Take(this.BandPeriod).ToList();
-                    if (dailyPrices.Count >= this.BandPeriod)
-                    {
-                        decimal middleBand = dailyPrices.Average(m => m.Price);
-                        decimal standardDeviation = CalculateStdDev(dailyPrices);
-                        decimal upperBand = middleBand + (standardDeviation * 2);
-                        decimal lowerBand = middleBand - (standardDeviation * 2);
-
-                        if (stock.LastTradePrice >= upperBand)
-                        {
-                            string body = string.Format("POSSIBLE SELL ACTION ({0})\r\n\r\nCurrent Price: {1}\r\nUpper Band: {2}", stock.Symbol, stock.LastTradePrice, upperBand);
-                            QueueEmail(this.EmailRecipient, string.Format("POSSIBLE SELL ACTION ({0})", stock.Symbol), body);
-                        }
-
-                        if (stock.LastTradePrice <= lowerBand)
-                        {
-                            string body = string.Format("POSSIBLE BUY ACTION ({0})\r\n\r\nCurrent Price: {1}\r\nLower Band: {2}", stock.Symbol, stock.LastTradePrice, lowerBand);
-                            QueueEmail(this.EmailRecipient, string.Format("POSSIBLE BUY ACTION ({0})", stock.Symbol), body);
-                        }
+                        string emailBody = null;
+                        string emailSubject = null;
+                        if(model.Evaluate(historicPrices.Select(p => p.Price).ToList(), currentPrice.Price, out emailBody, out emailSubject))
+                            QueueEmail(this.EmailRecipient, string.Format(emailSubject, stock.Symbol), emailBody);
                     }
                 }
             }
@@ -207,21 +191,63 @@ namespace StockBandit.Server
         #endregion
 
         #region PrivateHelpders
-
-        private decimal CalculateStdDev(List<DailyPrice> values)
+        
+        private DailyPrice InsertOrUpdateTodayPrice(Quote stock)
         {
-            double M = 0.0;
-            double S = 0.0;
-            int k = 1;
-            foreach (DailyPrice value in values)
+            // Find price for today
+            DailyPrice todayPrice = this.dataContext.DailyPrices.FirstOrDefault(p => p.Date == DateTime.Now.Date && p.StockCode == stock.Symbol);
+            if (todayPrice != null)
             {
-                double tmpM = M;
-                M += ((double)value.Price - tmpM) / k;
-                S += ((double)value.Price - tmpM) * ((double)value.Price - M);
-                k++;
+                // We have a price from the standard price checker. Check the value ot see if different and update if it is.
+                if (todayPrice.Price != stock.LastTradePrice && stock.LastTradePrice.HasValue)
+                {
+                    todayPrice.Price = stock.LastTradePrice.Value;
+                }
             }
-            decimal ret2 = (decimal)Math.Sqrt(S / (k - 1));
-            return ret2;
+            else
+            {
+                DailyPrice dailyPrice = new DailyPrice() { Date = DateTime.Now.Date, Price = stock.LastTradePrice.Value };
+                dailyPrice.StockCode = stock.Symbol;
+                this.dataContext.DailyPrices.InsertOnSubmit(dailyPrice);
+            }
+
+            this.dataContext.SubmitChanges();
+
+            return todayPrice;
+        }
+
+        private void PopulateHistoricPrices()
+        {
+            try
+            {
+                // Get the latest prices
+                foreach (Quote quote in this.StockCodesList)
+                {
+                    List<DailyPrice> historicPrices = this.googleHistoricWebStockEngine.Fetch(quote);
+
+                    // If different add to queue.
+                    foreach (DailyPrice dailyPrice in historicPrices)
+                    {
+                        // Find price for today
+                        DailyPrice existingPrice = this.dataContext.DailyPrices.FirstOrDefault(p => p.Date == dailyPrice.Date && p.StockCode == quote.Symbol);
+                        if (existingPrice != null)
+                        {
+                            existingPrice.Price = dailyPrice.Price;
+                        }
+                        else
+                        {
+                            this.dataContext.DailyPrices.InsertOnSubmit(dailyPrice);
+                        }
+
+                        this.dataContext.SubmitChanges();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                log.Error("Error in PopulateHistoricPrices", e);
+                QueueEmail(this.EmailRecipient, "System Error", e.ToString());
+            }
         }
 
         #endregion
