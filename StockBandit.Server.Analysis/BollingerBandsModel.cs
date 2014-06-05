@@ -15,9 +15,9 @@ namespace StockBandit.Server.Analysis
             this.bandPeriod = bandPeriod;
         }
 
-        public bool Evaluate(List<decimal> historicPrices, decimal currentPrice, out string emailBody, out string emailSubject)
+        public bool Evaluate(List<ClosingPrice> historicPrices, decimal currentPrice, out string emailBody, out string emailSubject)
         {
-            List<decimal> bandedHistoricPrices = historicPrices.Take(this.bandPeriod).ToList();
+            List<decimal> bandedHistoricPrices = historicPrices.Take(this.bandPeriod).Select(p => p.Price).ToList();
 
             decimal middleBand = bandedHistoricPrices.Average();
             decimal standardDeviation = StandardDeviation.CalculateStdDev(bandedHistoricPrices);

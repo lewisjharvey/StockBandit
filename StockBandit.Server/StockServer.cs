@@ -105,6 +105,7 @@ namespace StockBandit.Server
         {
             this.registeredModels = new List<IModel>();
             this.registeredModels.Add(new BollingerBandsModel(this.BandPeriod));
+            this.registeredModels.Add(new MovingAverageConvergenceDivergenceModel());
         }
 
         private void StartPriceFetchTimer()
@@ -146,13 +147,13 @@ namespace StockBandit.Server
                 {
                     DailyPrice currentPrice = InsertOrUpdateTodayPrice(stock);
 
-                    List<DailyPrice> historicPrices = this.dataContext.DailyPrices.Where(p => p.StockCode == stock.Symbol && p.Date > DateTime.Now.Date.Subtract(new TimeSpan(365, 0, 0, 0, 0)) && p.Date < DateTime.Now.Date).OrderByDescending(p => p.Date).ToList();
+                    List<DailyPrice> historicPrices = this.dataContext.DailyPrices.Where(p => p.StockCode == stock.Symbol && p.Date > DateTime.Now.Date.Subtract(new TimeSpan(1825,0,0,0,0)) && p.Date < DateTime.Now.Date).OrderByDescending(p => p.Date).ToList();
 
                     foreach(IModel model in this.registeredModels)
                     {
                         string emailBody = null;
                         string emailSubject = null;
-                        if(model.Evaluate(historicPrices.Select(p => p.Price).ToList(), currentPrice.Price, out emailBody, out emailSubject))
+                        if (model.Evaluate(historicPrices.ConvertAll<ClosingPrice>(p => new ClosingPrice() { Date = p.Date, Price = p.Price }), currentPrice.Price, out emailBody, out emailSubject))
                             QueueEmail(this.EmailRecipient, string.Format(emailSubject, stock.Symbol), emailBody);
                     }
                 }

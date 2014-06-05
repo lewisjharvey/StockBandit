@@ -11,7 +11,7 @@ namespace StockBandit.Server
 {
     public class GoogleHistoricWebStockEngine
     {
-        private const string BASE_URL = "http://www.google.com/finance/getprices?q={0}&x={1}&i=86400&p=1Y&f=d,c";
+        private const string BASE_URL = "http://www.google.com/finance/getprices?q={0}&x={1}&i=86400&p=5Y&f=d,c";
         private DateTime epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private const string matchLineRegex = "^[a]?[0-9]";
 
