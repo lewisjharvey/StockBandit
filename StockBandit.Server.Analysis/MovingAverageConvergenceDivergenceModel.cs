@@ -48,7 +48,7 @@ namespace StockBandit.Server.Analysis
                 }
                 else
                 {
-                    // We have fallen below, therefore bullish/buy
+                    // We have risen above, therefore bullish/buy
                     emailBody = string.Format("POSSIBLE MACD BUY ACTION\r\n\r\nCurrent Price: {0}\r\nMACD: {1}\r\nSignal: {2}", currentPrice, todayPrice.MACD, todayPrice.MACDEMA9);
                     emailSubject = "POSSIBLE MACD BUY ACTION ({0})";
                     return true;
