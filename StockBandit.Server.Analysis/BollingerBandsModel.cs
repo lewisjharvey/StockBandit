@@ -9,6 +9,7 @@ namespace StockBandit.Server.Analysis
     public class BollingerBandsModel : IModel
     {
         private int bandPeriod;
+        private bool notificationSent = false;
 
         public BollingerBandsModel(int bandPeriod)
         {
@@ -26,20 +27,31 @@ namespace StockBandit.Server.Analysis
 
             if (currentPrice >= upperBand)
             {
-                emailBody = string.Format("POSSIBLE BOLLINGER SELL ACTION\r\n\r\nCurrent Price: {0}\r\nUpper Band: {1}", currentPrice, upperBand);
-                emailSubject = "POSSIBLE BOLLINGER SELL ACTION ({0})";
-                return true;
+                if (!notificationSent)
+                {
+                    notificationSent = true;
+                    emailBody = string.Format("POSSIBLE BOLLINGER SELL ACTION\r\n\r\nCurrent Price: {0}\r\nUpper Band: {1}", currentPrice, upperBand);
+                    emailSubject = "POSSIBLE BOLLINGER SELL ACTION ({0})";
+                    return true;
+                }
             }
-
-            if (currentPrice <= lowerBand)
+            else if (currentPrice <= lowerBand)
             {
-                emailBody = string.Format("POSSIBLE BOLLINGER BUY ACTION\r\n\r\nCurrent Price: {0}\r\nLower Band: {1}", currentPrice, lowerBand);
-                emailSubject = "POSSIBLE BOLLINGER BUY ACTION ({0})";
-                return true;
+                if (!notificationSent)
+                {
+                    notificationSent = true;
+                    emailBody = string.Format("POSSIBLE BOLLINGER BUY ACTION\r\n\r\nCurrent Price: {0}\r\nLower Band: {1}", currentPrice, lowerBand);
+                    emailSubject = "POSSIBLE BOLLINGER BUY ACTION ({0})";
+                    return true;
+                }
             }
-
+            else
+            {
+                notificationSent = false;
+            }
             emailBody = null;
             emailSubject = null;
+
             return false;
         }
     }

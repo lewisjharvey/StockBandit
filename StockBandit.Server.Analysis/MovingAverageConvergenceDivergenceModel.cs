@@ -7,18 +7,23 @@ namespace StockBandit.Server.Analysis
 {
     public class MovingAverageConvergenceDivergenceModel : IModel
     {
+        private bool notificationSent = false;
+
         public bool Evaluate(List<ClosingPrice> historicPrices, decimal currentPrice, out string emailBody, out string emailSubject)
         {
-            // Get a complete list of data sorted with closed date at the bottom
+            // Clone the historicprices as they are passed by reference and we don't want to change the underlying data
             List<ClosingPrice> closingPrices = new List<ClosingPrice>(historicPrices);
+            // For analysis we need to add the current price
             closingPrices.Add(new ClosingPrice() { Date = DateTime.Now.Date, Price = currentPrice });
+            // Sort them so that the current price is at the bottom as the moving average is calculate from old to new
             closingPrices.Sort(ClosingPrice.CompareByDateAscending);
 
-            // Now we need to run through each and update the EMAs
+            // MACD uses three EMA - these are instantiated here.
             ExponentialMovingAverage twelveDayExponentialMovingAverage = new ExponentialMovingAverage(12);
             ExponentialMovingAverage twentySixDayExponentialMovingAverage = new ExponentialMovingAverage(26);
             ExponentialMovingAverage nineDayExponentialMovingAverage = new ExponentialMovingAverage(9);
 
+            // Loop through the closing prices and do the calculation for MACD and the signal line.
             foreach(ClosingPrice closingPrice in closingPrices)
             {
                 closingPrice.EMA12 = twelveDayExponentialMovingAverage.Calculate(closingPrice.Price);              
@@ -39,22 +44,33 @@ namespace StockBandit.Server.Analysis
 
             if (yesterday != today)
             {
-                if(yesterday)
+                if (yesterday)
                 {
-                    // We have fallen below, therefore bearish/sell
-                    emailBody = string.Format("POSSIBLE MACD SELL ACTION\r\n\r\nCurrent Price: {0}\r\nMACD: {1}\r\nSignal: {2}", currentPrice, todayPrice.MACD, todayPrice.MACDEMA9);
-                    emailSubject = "POSSIBLE MACD SELL ACTION ({0})";
-                    return true;
+                    if (!notificationSent)
+                    {
+                        // We have fallen below, therefore bearish/sell
+                        emailBody = string.Format("POSSIBLE MACD SELL ACTION\r\n\r\nCurrent Price: {0}\r\nMACD: {1}\r\nSignal: {2}", currentPrice, todayPrice.MACD, todayPrice.MACDEMA9);
+                        emailSubject = "POSSIBLE MACD SELL ACTION ({0})";
+                        notificationSent = true;
+                        return true;
+                    }
                 }
                 else
                 {
-                    // We have risen above, therefore bullish/buy
-                    emailBody = string.Format("POSSIBLE MACD BUY ACTION\r\n\r\nCurrent Price: {0}\r\nMACD: {1}\r\nSignal: {2}", currentPrice, todayPrice.MACD, todayPrice.MACDEMA9);
-                    emailSubject = "POSSIBLE MACD BUY ACTION ({0})";
-                    return true;
+                    if (!notificationSent)
+                    {
+                        // We have risen above, therefore bullish/buy
+                        emailBody = string.Format("POSSIBLE MACD BUY ACTION\r\n\r\nCurrent Price: {0}\r\nMACD: {1}\r\nSignal: {2}", currentPrice, todayPrice.MACD, todayPrice.MACDEMA9);
+                        emailSubject = "POSSIBLE MACD BUY ACTION ({0})";
+                        notificationSent = true;
+                        return true;
+                    }
                 }
             }
-
+            else
+            {
+                notificationSent = false;
+            }
             emailBody = null;
             emailSubject = null;
             return false;

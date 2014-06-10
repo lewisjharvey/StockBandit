@@ -91,6 +91,7 @@ namespace StockBandit.Server
                 // Get all the historical data and populate
                 PopulateHistoricPrices();
                 RegisterModels();
+
                 StartPriceFetchTimer();
             }
             catch (Exception ex)
@@ -136,6 +137,7 @@ namespace StockBandit.Server
 
             try
             {
+                // Get the google current price
                 lock (semaphore)
                 {
                     // Get the latest prices
@@ -147,6 +149,7 @@ namespace StockBandit.Server
                 {
                     DailyPrice currentPrice = InsertOrUpdateTodayPrice(stock);
 
+                    // Pass 5 years worth of data to the models, this should be enough for any model currently.
                     List<DailyPrice> historicPrices = this.dataContext.DailyPrices.Where(p => p.StockCode == stock.Symbol && p.Date > DateTime.Now.Date.Subtract(new TimeSpan(1825,0,0,0,0)) && p.Date < DateTime.Now.Date).OrderByDescending(p => p.Date).ToList();
 
                     foreach(IModel model in this.registeredModels)
@@ -157,6 +160,10 @@ namespace StockBandit.Server
                             QueueEmail(this.EmailRecipient, string.Format(emailSubject, stock.Symbol), emailBody);
                     }
                 }
+            }
+            catch (System.Net.WebException)
+            {
+                log.Error("No internet access - unable to get prices.");
             }
             catch (Exception e)
             {
@@ -210,10 +217,11 @@ namespace StockBandit.Server
                 DailyPrice dailyPrice = new DailyPrice() { Date = DateTime.Now.Date, Price = stock.LastTradePrice.Value };
                 dailyPrice.StockCode = stock.Symbol;
                 this.dataContext.DailyPrices.InsertOnSubmit(dailyPrice);
+                todayPrice = dailyPrice;
             }
 
             this.dataContext.SubmitChanges();
-
+            
             return todayPrice;
         }
 
@@ -221,10 +229,18 @@ namespace StockBandit.Server
         {
             try
             {
+                List<DailyPrice> historicPrices;
                 // Get the latest prices
                 foreach (Quote quote in this.StockCodesList)
                 {
-                    List<DailyPrice> historicPrices = this.googleHistoricWebStockEngine.Fetch(quote);
+                    // Instantiate to avoid null reference
+                    historicPrices = new List<DailyPrice>();
+                    
+                    // Get the historic prices from Google
+                    lock (semaphore)
+                    {
+                        historicPrices = this.googleHistoricWebStockEngine.Fetch(quote);
+                    }
 
                     // If different add to queue.
                     foreach (DailyPrice dailyPrice in historicPrices)
@@ -243,6 +259,10 @@ namespace StockBandit.Server
                         this.dataContext.SubmitChanges();
                     }
                 }
+            }
+            catch(System.Net.WebException)
+            {
+                log.Error("No internet access - unable to get prices.");
             }
             catch (Exception e)
             {
