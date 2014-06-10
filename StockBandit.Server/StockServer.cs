@@ -156,8 +156,8 @@ namespace StockBandit.Server
                     {
                         string emailBody = null;
                         string emailSubject = null;
-                        if (model.Evaluate(historicPrices.ConvertAll<ClosingPrice>(p => new ClosingPrice() { Date = p.Date, Price = p.Price }), currentPrice.Price, out emailBody, out emailSubject))
-                            QueueEmail(this.EmailRecipient, string.Format(emailSubject, stock.Symbol), emailBody);
+                        if (model.Evaluate(stock, historicPrices.ConvertAll<ClosingPrice>(p => new ClosingPrice() { Date = p.Date, Price = p.Price }), currentPrice.Price, out emailBody, out emailSubject))
+                            QueueEmail(this.EmailRecipient, emailSubject, emailBody);
                     }
                 }
             }
