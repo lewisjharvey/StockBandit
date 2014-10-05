@@ -37,6 +37,10 @@ namespace StockBandit.Server
         private string emailRecipient;
         private int? bandPeriod;
         private int? priceCheckMinutes;
+        private bool? enableBollingerBands;
+        private bool? enableMACD;
+        private bool? enableVolume;
+        private double? alertThreshold;
 
         #endregion
 
@@ -76,6 +80,10 @@ namespace StockBandit.Server
             server.EmailRecipient = this.emailRecipient;
             server.BandPeriod = this.bandPeriod.Value;
             server.PriceCheckMinutes = this.priceCheckMinutes.Value;
+            server.EnableBollingerBands = this.enableBollingerBands.Value;
+            server.EnableMACD = this.enableMACD.Value;
+            server.EnableVolume = this.enableVolume.Value;
+            server.AlertThreshold = this.alertThreshold.Value;
 
             return server;
         }
@@ -93,6 +101,10 @@ namespace StockBandit.Server
             LoadConfigurationSetting("EmailRecipient", out emailRecipient);
             LoadConfigurationSetting("BandPeriod", out bandPeriod);
             LoadConfigurationSetting("PriceCheckMinutes", out priceCheckMinutes);
+            LoadConfigurationSetting("EnableBollingerBands", out enableBollingerBands);
+            LoadConfigurationSetting("EnableMACD", out enableMACD);
+            LoadConfigurationSetting("EnableVolume", out enableVolume);
+            LoadConfigurationSetting("AlertThreshold", out alertThreshold);
         }
 
         #region Configuration setting loaders
@@ -137,6 +149,14 @@ namespace StockBandit.Server
                 value = null;
         }
 
+        private void LoadConfigurationSetting(string settingName, out double? value)
+        {
+            if (ConfigurationManager.AppSettings[settingName] != null)
+                value = double.Parse(ConfigurationManager.AppSettings[settingName]);
+            else
+                value = null;
+        }
+
         #endregion
 
         private bool ValidateConfiguration()
@@ -165,6 +185,10 @@ namespace StockBandit.Server
                 errorMessages.Add("The BandPeriod configuration setting is not set.");
             if (!this.priceCheckMinutes.HasValue)
                 errorMessages.Add("The PriceCheckMinutes configuration setting is not set.");
+            if (!this.enableBollingerBands.HasValue)
+                errorMessages.Add("The EnableBollingerBands configuration setting is not set.");
+            if (!this.enableMACD.HasValue)
+                errorMessages.Add("The EnableMACD configuration setting is not set.");
 
             this.ErrorMessages.AddRange(errorMessages);
 

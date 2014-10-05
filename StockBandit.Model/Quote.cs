@@ -21,6 +21,8 @@ namespace StockBandit.Model
         public DateTime LastUpdate { get; set; }
         public string Symbol { get; set; }
         public decimal? LastTradePrice { get; set; }
+        public int? CurrentVolume { get; set; }
+        public int? AverageVolume { get; set; }
 
         public Quote(string symbol)
         {

@@ -10,3 +10,17 @@ D:\code\StockBandit\StockBandit.Server\bin\Release\StockBandit.Server.dll.config
 D:\code\StockBandit\StockBandit.Server\bin\Release\HtmlAgilityPack.dll
 D:\code\StockBandit\StockBandit.Server\bin\Release\HtmlAgilityPack.pdb
 D:\code\StockBandit\StockBandit.Server\bin\Release\HtmlAgilityPack.xml
+D:\projects\StockBandit\StockBandit.Server\bin\Release\StockBandit.Server.dll.config
+D:\projects\StockBandit\StockBandit.Server\bin\Release\StockBandit.Server.dll
+D:\projects\StockBandit\StockBandit.Server\bin\Release\StockBandit.Server.pdb
+D:\projects\StockBandit\StockBandit.Server\bin\Release\HtmlAgilityPack.dll
+D:\projects\StockBandit\StockBandit.Server\bin\Release\log4net.dll
+D:\projects\StockBandit\StockBandit.Server\bin\Release\StockBandit.Model.dll
+D:\projects\StockBandit\StockBandit.Server\bin\Release\StockBandit.Server.Analysis.dll
+D:\projects\StockBandit\StockBandit.Server\bin\Release\StockBandit.Model.pdb
+D:\projects\StockBandit\StockBandit.Server\bin\Release\StockBandit.Server.Analysis.pdb
+D:\projects\StockBandit\StockBandit.Server\bin\Release\HtmlAgilityPack.pdb
+D:\projects\StockBandit\StockBandit.Server\bin\Release\HtmlAgilityPack.xml
+D:\projects\StockBandit\StockBandit.Server\obj\Release\StockBandit.Server.csprojResolveAssemblyReference.cache
+D:\projects\StockBandit\StockBandit.Server\obj\Release\StockBandit.Server.dll
+D:\projects\StockBandit\StockBandit.Server\obj\Release\StockBandit.Server.pdb

@@ -6,3 +6,11 @@ D:\code\StockBandit\StockBandit.Client.Console\bin\Release\StockBandit.Model.pdb
 D:\code\StockBandit\StockBandit.Client.Console\obj\x86\Release\ResolveAssemblyReference.cache
 D:\code\StockBandit\StockBandit.Client.Console\obj\x86\Release\StockBandit.Client.Console.exe
 D:\code\StockBandit\StockBandit.Client.Console\obj\x86\Release\StockBandit.Client.Console.pdb
+D:\projects\StockBandit\StockBandit.Client.Console\bin\Release\StockBandit.Client.Console.exe.config
+D:\projects\StockBandit\StockBandit.Client.Console\bin\Release\StockBandit.Client.Console.exe
+D:\projects\StockBandit\StockBandit.Client.Console\bin\Release\StockBandit.Client.Console.pdb
+D:\projects\StockBandit\StockBandit.Client.Console\bin\Release\StockBandit.Model.dll
+D:\projects\StockBandit\StockBandit.Client.Console\bin\Release\StockBandit.Model.pdb
+D:\projects\StockBandit\StockBandit.Client.Console\obj\x86\Release\StockBandit.Client.Console.csprojResolveAssemblyReference.cache
+D:\projects\StockBandit\StockBandit.Client.Console\obj\x86\Release\StockBandit.Client.Console.exe
+D:\projects\StockBandit\StockBandit.Client.Console\obj\x86\Release\StockBandit.Client.Console.pdb

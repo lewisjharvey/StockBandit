@@ -50,6 +50,7 @@
     <Compile Include="ClosingPrice.cs" />
     <Compile Include="ExponentialMovingAverage.cs" />
     <Compile Include="IModel.cs" />
+    <Compile Include="VolumeModel.cs" />
     <Compile Include="MovingAverageConvergenceDivergenceModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimpleMovingAverage.cs" />

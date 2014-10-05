@@ -41,6 +41,10 @@ namespace StockBandit.Server
         public string EmailRecipient { get; set; }
         public int BandPeriod { get; set; }
         public int PriceCheckMinutes { get; set; }
+        public bool EnableBollingerBands { get; set; }
+        public bool EnableMACD { get; set; }
+        public bool EnableVolume { get; set; }
+        public double AlertThreshold { get; set; }
 
         #endregion
 
@@ -105,8 +109,12 @@ namespace StockBandit.Server
         private void RegisterModels()
         {
             this.registeredModels = new List<IModel>();
-            this.registeredModels.Add(new BollingerBandsModel(this.BandPeriod));
-            this.registeredModels.Add(new MovingAverageConvergenceDivergenceModel());
+            if(this.EnableBollingerBands)
+                this.registeredModels.Add(new BollingerBandsModel(this.BandPeriod));
+            if(this.EnableMACD)
+                this.registeredModels.Add(new MovingAverageConvergenceDivergenceModel());
+            if (this.EnableVolume)
+                this.registeredModels.Add(new VolumeModel(this.AlertThreshold));
         }
 
         private void StartPriceFetchTimer()
@@ -156,7 +164,7 @@ namespace StockBandit.Server
                     {
                         string emailBody = null;
                         string emailSubject = null;
-                        if (model.Evaluate(stock, historicPrices.ConvertAll<ClosingPrice>(p => new ClosingPrice() { Date = p.Date, Price = p.Price }), currentPrice.Price, out emailBody, out emailSubject))
+                        if (model.Evaluate(stock, historicPrices.ConvertAll<ClosingPrice>(p => new ClosingPrice() { Date = p.Date, Price = p.Price, Volume = p.Volume }), currentPrice.Price, out emailBody, out emailSubject))
                             QueueEmail(this.EmailRecipient, emailSubject, emailBody);
                     }
                 }
@@ -206,15 +214,12 @@ namespace StockBandit.Server
             DailyPrice todayPrice = this.dataContext.DailyPrices.FirstOrDefault(p => p.Date == DateTime.Now.Date && p.StockCode == stock.Symbol);
             if (todayPrice != null)
             {
-                // We have a price from the standard price checker. Check the value ot see if different and update if it is.
-                if (todayPrice.Price != stock.LastTradePrice && stock.LastTradePrice.HasValue)
-                {
-                    todayPrice.Price = stock.LastTradePrice.Value;
-                }
+                todayPrice.Price = stock.LastTradePrice.Value;
+                todayPrice.Volume = stock.CurrentVolume.Value;
             }
             else
             {
-                DailyPrice dailyPrice = new DailyPrice() { Date = DateTime.Now.Date, Price = stock.LastTradePrice.Value };
+                DailyPrice dailyPrice = new DailyPrice() { Date = DateTime.Now.Date, Price = stock.LastTradePrice.Value, Volume = stock.CurrentVolume.Value };
                 dailyPrice.StockCode = stock.Symbol;
                 this.dataContext.DailyPrices.InsertOnSubmit(dailyPrice);
                 todayPrice = dailyPrice;
@@ -233,13 +238,15 @@ namespace StockBandit.Server
                 // Get the latest prices
                 foreach (Quote quote in this.StockCodesList)
                 {
-                    // Instantiate to avoid null reference
-                    historicPrices = new List<DailyPrice>();
+                    log.InfoFormat("Collecting Historic Prices for {0}", quote.Symbol);
+
+                    // Get the historic prices
+                    DateTime lastRetrieveDate = this.dataContext.DailyPrices.Where(p => p.StockCode == quote.Symbol && p.Date < DateTime.Today).OrderByDescending(p => p.Date).Select(p => p.Date).FirstOrDefault();                
                     
                     // Get the historic prices from Google
                     lock (semaphore)
                     {
-                        historicPrices = this.googleHistoricWebStockEngine.Fetch(quote);
+                        historicPrices = this.googleHistoricWebStockEngine.Fetch(quote, lastRetrieveDate);
                     }
 
                     // If different add to queue.
@@ -250,6 +257,7 @@ namespace StockBandit.Server
                         if (existingPrice != null)
                         {
                             existingPrice.Price = dailyPrice.Price;
+                            existingPrice.Volume = dailyPrice.Volume;
                         }
                         else
                         {
@@ -258,6 +266,8 @@ namespace StockBandit.Server
 
                         this.dataContext.SubmitChanges();
                     }
+
+                    log.InfoFormat("Collected Historic Prices for {0}", quote.Symbol);
                 }
             }
             catch(System.Net.WebException)
@@ -269,6 +279,8 @@ namespace StockBandit.Server
                 log.Error("Error in PopulateHistoricPrices", e);
                 QueueEmail(this.EmailRecipient, "System Error", e.ToString());
             }
+
+            log.Info("Finished Collecting Historic Prices");
         }
 
         #endregion
@@ -283,8 +295,11 @@ namespace StockBandit.Server
         public List<string> GetLastPrices()
         {
             List<string> lastPrices = new List<string>();
-            foreach (Quote quote in this.StockCodesList)
-                lastPrices.Add(string.Format("{0} - {1}p", quote.Symbol, quote.LastTradePrice));
+            foreach (var item in this.dataContext.Stocks)
+            {
+                foreach (var price in item.DailyPrices.OrderByDescending(p => p.Date).Take(1).ToList())
+                    lastPrices.Add(string.Format("{0} - {1}: {2}p", item.StockCode, price.Date.ToShortDateString(), price.Price));
+            }
             return lastPrices;
         }
 
@@ -313,12 +328,16 @@ namespace StockBandit.Server
             this.dataContext.Stocks.InsertOnSubmit(stock);
             this.dataContext.SubmitChanges();
 
+            
+
             // Now repopulate the StockCodesList
             lock (semaphore)
             {
                 this.StockCodesList = new ObservableCollection<Quote>();
                 foreach (string code in this.dataContext.Stocks.Select(p => p.StockCode).ToList())
                     this.StockCodesList.Add(new Quote(code));
+
+                PopulateHistoricPrices();
             }
         }
 
@@ -329,12 +348,13 @@ namespace StockBandit.Server
             Stock stock = this.dataContext.Stocks.FirstOrDefault(s => s.StockCode.ToUpper() == stockCode.ToUpper());
             if (stock != null)
             {
-                this.dataContext.Stocks.DeleteOnSubmit(stock);
-                this.dataContext.SubmitChanges();
-
-                // Now repopulate the StockCodesList
                 lock (semaphore)
                 {
+                    this.dataContext.DailyPrices.DeleteAllOnSubmit(this.dataContext.DailyPrices.Where(p => p.StockCode == stock.StockCode));
+                    this.dataContext.Stocks.DeleteOnSubmit(stock);
+                    this.dataContext.SubmitChanges();
+
+                    // Now repopulate the StockCodesList
                     this.StockCodesList = new ObservableCollection<Quote>();
                     foreach (string code in this.dataContext.Stocks.Select(p => p.StockCode).ToList())
                         this.StockCodesList.Add(new Quote(code));

@@ -26,7 +26,7 @@ namespace StockBandit.Server.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=HARTLEY;Initial Catalog=StockBandit;Integrated Security=True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=localhost;Initial Catalog=StockBandit;Integrated Security=True")]
         public string StockBanditConnectionString {
             get {
                 return ((string)(this["StockBanditConnectionString"]));

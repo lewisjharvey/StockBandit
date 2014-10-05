@@ -30,12 +30,12 @@ namespace StockBandit.Server
 		
     #region Extensibility Method Definitions
     partial void OnCreated();
-    partial void InsertDailyPrice(DailyPrice instance);
-    partial void UpdateDailyPrice(DailyPrice instance);
-    partial void DeleteDailyPrice(DailyPrice instance);
     partial void InsertStock(Stock instance);
     partial void UpdateStock(Stock instance);
     partial void DeleteStock(Stock instance);
+    partial void InsertDailyPrice(DailyPrice instance);
+    partial void UpdateDailyPrice(DailyPrice instance);
+    partial void DeleteDailyPrice(DailyPrice instance);
     #endregion
 		
 		public StockBanditDataContext() : 
@@ -68,14 +68,6 @@ namespace StockBandit.Server
 			OnCreated();
 		}
 		
-		public System.Data.Linq.Table<DailyPrice> DailyPrices
-		{
-			get
-			{
-				return this.GetTable<DailyPrice>();
-			}
-		}
-		
 		public System.Data.Linq.Table<Stock> Stocks
 		{
 			get
@@ -83,179 +75,12 @@ namespace StockBandit.Server
 				return this.GetTable<Stock>();
 			}
 		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.DailyPrice")]
-	public partial class DailyPrice : INotifyPropertyChanging, INotifyPropertyChanged
-	{
 		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private int _Id;
-		
-		private string _StockCode;
-		
-		private System.DateTime _Date;
-		
-		private decimal _Price;
-		
-		private EntityRef<Stock> _Stock;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnIdChanging(int value);
-    partial void OnIdChanged();
-    partial void OnStockCodeChanging(string value);
-    partial void OnStockCodeChanged();
-    partial void OnDateChanging(System.DateTime value);
-    partial void OnDateChanged();
-    partial void OnPriceChanging(decimal value);
-    partial void OnPriceChanged();
-    #endregion
-		
-		public DailyPrice()
-		{
-			this._Stock = default(EntityRef<Stock>);
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int Id
+		public System.Data.Linq.Table<DailyPrice> DailyPrices
 		{
 			get
 			{
-				return this._Id;
-			}
-			set
-			{
-				if ((this._Id != value))
-				{
-					this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_StockCode", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
-		public string StockCode
-		{
-			get
-			{
-				return this._StockCode;
-			}
-			set
-			{
-				if ((this._StockCode != value))
-				{
-					if (this._Stock.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnStockCodeChanging(value);
-					this.SendPropertyChanging();
-					this._StockCode = value;
-					this.SendPropertyChanged("StockCode");
-					this.OnStockCodeChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Date", DbType="DateTime NOT NULL")]
-		public System.DateTime Date
-		{
-			get
-			{
-				return this._Date;
-			}
-			set
-			{
-				if ((this._Date != value))
-				{
-					this.OnDateChanging(value);
-					this.SendPropertyChanging();
-					this._Date = value;
-					this.SendPropertyChanged("Date");
-					this.OnDateChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Price", DbType="Decimal(19,4) NOT NULL")]
-		public decimal Price
-		{
-			get
-			{
-				return this._Price;
-			}
-			set
-			{
-				if ((this._Price != value))
-				{
-					this.OnPriceChanging(value);
-					this.SendPropertyChanging();
-					this._Price = value;
-					this.SendPropertyChanged("Price");
-					this.OnPriceChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Stock_DailyPrice", Storage="_Stock", ThisKey="StockCode", OtherKey="StockCode", IsForeignKey=true)]
-		public Stock Stock
-		{
-			get
-			{
-				return this._Stock.Entity;
-			}
-			set
-			{
-				Stock previousValue = this._Stock.Entity;
-				if (((previousValue != value) 
-							|| (this._Stock.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Stock.Entity = null;
-						previousValue.DailyPrices.Remove(this);
-					}
-					this._Stock.Entity = value;
-					if ((value != null))
-					{
-						value.DailyPrices.Add(this);
-						this._StockCode = value.StockCode;
-					}
-					else
-					{
-						this._StockCode = default(string);
-					}
-					this.SendPropertyChanged("Stock");
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+				return this.GetTable<DailyPrice>();
 			}
 		}
 	}
@@ -371,6 +196,205 @@ namespace StockBandit.Server
 		{
 			this.SendPropertyChanging();
 			entity.Stock = null;
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.DailyPrice")]
+	public partial class DailyPrice : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _Id;
+		
+		private string _StockCode;
+		
+		private System.DateTime _Date;
+		
+		private decimal _Price;
+		
+		private int _Volume;
+		
+		private EntityRef<Stock> _Stock;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIdChanging(int value);
+    partial void OnIdChanged();
+    partial void OnStockCodeChanging(string value);
+    partial void OnStockCodeChanged();
+    partial void OnDateChanging(System.DateTime value);
+    partial void OnDateChanged();
+    partial void OnPriceChanging(decimal value);
+    partial void OnPriceChanged();
+    partial void OnVolumeChanging(int value);
+    partial void OnVolumeChanged();
+    #endregion
+		
+		public DailyPrice()
+		{
+			this._Stock = default(EntityRef<Stock>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_StockCode", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
+		public string StockCode
+		{
+			get
+			{
+				return this._StockCode;
+			}
+			set
+			{
+				if ((this._StockCode != value))
+				{
+					if (this._Stock.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnStockCodeChanging(value);
+					this.SendPropertyChanging();
+					this._StockCode = value;
+					this.SendPropertyChanged("StockCode");
+					this.OnStockCodeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Date", DbType="DateTime NOT NULL")]
+		public System.DateTime Date
+		{
+			get
+			{
+				return this._Date;
+			}
+			set
+			{
+				if ((this._Date != value))
+				{
+					this.OnDateChanging(value);
+					this.SendPropertyChanging();
+					this._Date = value;
+					this.SendPropertyChanged("Date");
+					this.OnDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Price", DbType="Decimal(19,4) NOT NULL")]
+		public decimal Price
+		{
+			get
+			{
+				return this._Price;
+			}
+			set
+			{
+				if ((this._Price != value))
+				{
+					this.OnPriceChanging(value);
+					this.SendPropertyChanging();
+					this._Price = value;
+					this.SendPropertyChanged("Price");
+					this.OnPriceChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Volume", DbType="Int NOT NULL")]
+		public int Volume
+		{
+			get
+			{
+				return this._Volume;
+			}
+			set
+			{
+				if ((this._Volume != value))
+				{
+					this.OnVolumeChanging(value);
+					this.SendPropertyChanging();
+					this._Volume = value;
+					this.SendPropertyChanged("Volume");
+					this.OnVolumeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Stock_DailyPrice", Storage="_Stock", ThisKey="StockCode", OtherKey="StockCode", IsForeignKey=true)]
+		public Stock Stock
+		{
+			get
+			{
+				return this._Stock.Entity;
+			}
+			set
+			{
+				Stock previousValue = this._Stock.Entity;
+				if (((previousValue != value) 
+							|| (this._Stock.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Stock.Entity = null;
+						previousValue.DailyPrices.Remove(this);
+					}
+					this._Stock.Entity = value;
+					if ((value != null))
+					{
+						value.DailyPrices.Add(this);
+						this._StockCode = value.StockCode;
+					}
+					else
+					{
+						this._StockCode = default(string);
+					}
+					this.SendPropertyChanged("Stock");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
 		}
 	}
 }

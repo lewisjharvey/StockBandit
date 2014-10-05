@@ -44,6 +44,7 @@ namespace StockBandit.Server
                     doc.Load(resultStream);
 
                     string priceString = "";
+                    string volumeString = "";
                     HtmlNode htmlNode = doc.DocumentNode.SelectSingleNode("//div[@id='price-panel']//span[@class='pr']//span");
                     if (htmlNode == null)
                     {
@@ -57,12 +58,26 @@ namespace StockBandit.Server
                     if(string.IsNullOrEmpty(priceString))
                         throw new ApplicationException("The node cannot be found for the price.");
 
+                    HtmlNodeCollection additionalDateHtmlNodes = doc.DocumentNode.SelectNodes("//div[@class='snap-panel-and-plusone']//div[@class='snap-panel']//table//tr");
+                    foreach(HtmlNode node in additionalDateHtmlNodes)
+                    {
+                        if(node.HasChildNodes && node.ChildNodes[1].Attributes["data-snapfield"].Value == "vol_and_avg")
+                        {
+                            volumeString = node.ChildNodes[3].InnerText;
+                            break;
+                        }
+                    }
+
                     decimal price = -1;
                     if (decimal.TryParse(priceString, out price))
                     {
                         quote.LastTradePrice = price;
                         quote.LastUpdate = DateTime.Now;
                     }
+
+                    string[] volumeParts = volumeString.Split(new char[1] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+                    quote.CurrentVolume = (int)double.Parse(volumeParts[0]);
+                    quote.AverageVolume = (int)double.Parse(volumeParts[1]);
                 }
             }
         }

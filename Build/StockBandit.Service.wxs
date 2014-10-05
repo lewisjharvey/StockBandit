@@ -1,0 +1,75 @@
+﻿<?xml version='1.0' encoding='Windows-1252'?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+
+	<Product Name='StockBandit' Id='BE06E438-DEE8-4AC8-9D4E-4ACCDB6A19B5' UpgradeCode='3E040F44-397B-4C57-B98E-E9C5907B3D81'
+		Language='1033' Codepage='1252' Version='1.0.0' Manufacturer='Lewis Harvey'>
+
+		<Package Id='*' Keywords='Installer' Description="A stock monitoring system with various alerting models."
+		  Manufacturer='Lewis Harvey'
+		  InstallerVersion='100' Languages='1033' Compressed='yes' SummaryCodepage='1252' />
+		<Property Id="WIXUI_INSTALLDIR" Value="INSTALLLOCATION" />
+		<UIRef Id="WixUI_InstallDir" />
+		<Media Id="1" Cabinet="product.cab" EmbedCab="yes"/>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+				<Directory Id="INSTALLLOCATION" Name="StockBandit Service">
+					<Component Id="HtmlAgilityPack" Guid="1506AA59-73CC-4D21-811D-E66ADA6EF762">
+						<File Id='HtmlAgilityPackDll' Name='HtmlAgilityPack.dll' DiskId='1' Source='..\ExternalAssemblies\HtmlAgilityPack.dll' KeyPath='no' Vital="yes" />
+					</Component>
+					<Component Id="Log4Net" Guid="EF806377-40CA-4A59-9ECB-FF034A13B4D9">
+						<File Id='Log4NetDll' Name='log4net.dll' DiskId='1' Source='..\ExternalAssemblies\log4net.dll' KeyPath='no' Vital="yes" />
+					</Component>
+					<Component Id="Log4NetConfig" Guid="868028BA-5D64-42BF-8761-5E8BE22C897C">
+						<File Id='Log4NetConfigFile' Name='StockBandit.Service.exe.log4net' DiskId='1' Source='..\StockBandit.Service\StockBandit.Service.exe.log4net' KeyPath='no' Vital="yes" />
+					</Component>
+					<Component Id="Model" Guid="1998A2EC-6749-4710-84DB-8CC06C3F1CB1">
+						<File Id='ModelDll' Name='StockBandit.Model.dll' DiskId='1' Source='..\StockBandit.Model\bin\Release\StockBandit.Model.dll' KeyPath='no' Vital="yes" />
+					</Component>
+					<Component Id="Analysis" Guid="CBCBE31A-D34A-468B-B475-6287102AD36A">
+						<File Id='AnalysisDll' Name='StockBandit.Server.Analysis.dll' DiskId='1' Source='..\StockBandit.Server.Analysis\bin\Release\StockBandit.Server.Analysis.dll' KeyPath='no' Vital="yes" />
+					</Component>
+					<Component Id="Server" Guid="58A594BD-F6E2-461C-AC59-3DE62E00AFAA">
+						<File Id='ServerDll' Name='StockBandit.Server.dll' DiskId='1' Source='..\StockBandit.Server\bin\Release\StockBandit.Server.dll' KeyPath='no' Vital="yes" />
+					</Component>
+					<Component Id="ServiceEXEConfig" Guid="D1F78E27-AAA0-42BD-BBB3-E10337254B46">
+						<File Id='ServiceConfig' Name='StockBandit.Service.exe.config' DiskId='1' Source='..\StockBandit.Service\bin\Release\StockBandit.Service.exe.config' KeyPath='no' Vital="yes" />
+					</Component>
+					<Component Id="ServiceEXE" Guid="DBC210FC-1DED-4740-8881-B712DB2672A0">
+						<File Id='StockBanditServiceEXE' Name='StockBandit.Service.exe' DiskId='1' Source='..\StockBandit.Service\bin\Release\StockBandit.Service.exe' KeyPath='yes' Vital="yes" />
+						<ServiceInstall
+						  Id="ServiceInstaller"
+						  Vital="yes"
+						  Type="ownProcess"
+						  Name="StockBandit.Service.exe"
+						  DisplayName="StockBandit Service"
+						  Description="Stock analysis models with alerting"
+						  Start="demand"
+						  Account="LocalSystem"
+						  ErrorControl="normal"
+						  Interactive="no" />
+						<ServiceControl Id="ControlWixService" Name="StockBandit.Service.exe" Stop="uninstall" Remove="uninstall" />
+					</Component>
+				</Directory>
+			</Directory>
+			<Directory Id="ProgramMenuFolder" Name="Programs">
+				<Directory Id="ProgramMenuDir" Name="StockBandit Service">
+					<Component Id="ProgramMenuDir" Guid="09825B87-0B44-48F0-82E6-071E145DCAD5">
+						<RemoveFolder Id='ProgramMenuDir' On='uninstall' />
+						<RegistryValue Root='HKCU' Key='Software\Lewis Harvey\StockBandit Service' Type='string' Value='' KeyPath='yes' />
+					</Component>
+				</Directory>
+			</Directory>
+		</Directory>
+		<Feature Id='Complete' Level='1'>
+		  <ComponentRef Id='ServiceEXE' />
+		  <ComponentRef Id='HtmlAgilityPack' />
+		  <ComponentRef Id='Log4Net' />
+		  <ComponentRef Id='Log4NetConfig' />
+		  <ComponentRef Id='Model' />
+		  <ComponentRef Id='Analysis' />
+		  <ComponentRef Id='Server' />
+		  <ComponentRef Id='ServiceEXEConfig' />
+		  <ComponentRef Id='ProgramMenuDir' />
+		</Feature>
+	</Product>
+</Wix>
