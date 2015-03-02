@@ -45,40 +45,43 @@ namespace StockBandit.Server.Analysis
             // Reverse the order as it's easier to work down now.
             closingPrices.Reverse();
 
-            ClosingPrice todayPrice = closingPrices.First();
-            ClosingPrice yesterdayPrice = closingPrices.Skip(1).First();
-
-            bool yesterday = yesterdayPrice.MACD >= yesterdayPrice.MACDEMA9;
-            bool today = todayPrice.MACD >= todayPrice.MACDEMA9;
-
-            if (yesterday != today)
+            if (closingPrices.Count > 1)
             {
-                if (yesterday)
+                ClosingPrice todayPrice = closingPrices.First();
+                ClosingPrice yesterdayPrice = closingPrices.Skip(1).First();
+
+                bool yesterday = yesterdayPrice.MACD >= yesterdayPrice.MACDEMA9;
+                bool today = todayPrice.MACD >= todayPrice.MACDEMA9;
+
+                if (yesterday != today)
                 {
-                    if (!this.notificationsSent[quote.Symbol])
+                    if (yesterday)
                     {
-                        // We have fallen below, therefore bearish/sell
-                        emailBody = string.Format("POSSIBLE MACD SELL ACTION\r\n\r\nStock: {0}\r\nCurrent Price: {1}\r\nMACD: {2}\r\nSignal: {3}", quote.Symbol, currentPrice, todayPrice.MACD, todayPrice.MACDEMA9);
-                        emailSubject = string.Format("POSSIBLE MACD SELL ACTION ({0})", quote.Symbol);
-                        this.notificationsSent[quote.Symbol] = true;
-                        return true;
+                        if (!this.notificationsSent[quote.Symbol])
+                        {
+                            // We have fallen below, therefore bearish/sell
+                            emailBody = string.Format("POSSIBLE MACD SELL ACTION\r\n\r\nStock: {0}\r\nCurrent Price: {1}\r\nMACD: {2}\r\nSignal: {3}", quote.Symbol, currentPrice, todayPrice.MACD, todayPrice.MACDEMA9);
+                            emailSubject = string.Format("POSSIBLE MACD SELL ACTION ({0})", quote.Symbol);
+                            this.notificationsSent[quote.Symbol] = true;
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        if (!this.notificationsSent[quote.Symbol])
+                        {
+                            // We have risen above, therefore bullish/buy
+                            emailBody = string.Format("POSSIBLE MACD BUY ACTION\r\n\r\nStock: {0}\r\nCurrent Price: {1}\r\nMACD: {2}\r\nSignal: {3}", quote.Symbol, currentPrice, todayPrice.MACD, todayPrice.MACDEMA9);
+                            emailSubject = string.Format("POSSIBLE MACD BUY ACTION ({0})", quote.Symbol);
+                            this.notificationsSent[quote.Symbol] = true;
+                            return true;
+                        }
                     }
                 }
                 else
                 {
-                    if (!this.notificationsSent[quote.Symbol])
-                    {
-                        // We have risen above, therefore bullish/buy
-                        emailBody = string.Format("POSSIBLE MACD BUY ACTION\r\n\r\nStock: {0}\r\nCurrent Price: {1}\r\nMACD: {2}\r\nSignal: {3}", quote.Symbol, currentPrice, todayPrice.MACD, todayPrice.MACDEMA9);
-                        emailSubject = string.Format("POSSIBLE MACD BUY ACTION ({0})", quote.Symbol);
-                        this.notificationsSent[quote.Symbol] = true;
-                        return true;
-                    }
+                    this.notificationsSent[quote.Symbol] = false;
                 }
-            }
-            else
-            {
-                this.notificationsSent[quote.Symbol] = false;
             }
             emailBody = null;
             emailSubject = null;

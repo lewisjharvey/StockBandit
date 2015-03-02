@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Linq;
 using System.ServiceModel;
+using System.Threading.Tasks;
 using StockBandit.Server.Analysis;
 
 namespace StockBandit.Server
@@ -57,7 +58,6 @@ namespace StockBandit.Server
         private ServiceHost serviceHost;
         private GoogleWebStockEngine googleWebStockEngine;
         private GoogleHistoricWebStockEngine googleHistoricWebStockEngine;
-        private StockBanditDataContext dataContext;
         private List<IModel> registeredModels;
 
         #region StartupProcedures
@@ -81,15 +81,16 @@ namespace StockBandit.Server
 
                 // Convert the stocks to a list
                 this.StockCodesList = new ObservableCollection<Quote>();
-                // Setup database context
-                this.dataContext = new StockBanditDataContext(this.DatabaseConnectionString);
                 // Setup google for querying
                 this.googleWebStockEngine = new GoogleWebStockEngine();
                 this.googleHistoricWebStockEngine = new GoogleHistoricWebStockEngine();
 
-                foreach (string stockCode in this.dataContext.Stocks.Select(p => p.StockCode).ToList())
+                using (StockBanditDataContext dataContext = new StockBanditDataContext())
                 {
-                    this.StockCodesList.Add(new Quote(stockCode));
+                    foreach (string stockCode in dataContext.Stocks.Select(p => p.StockCode).ToList())
+                    {
+                        this.StockCodesList.Add(new Quote(stockCode));
+                    }
                 }
 
                 // Get all the historical data and populate
@@ -158,14 +159,25 @@ namespace StockBandit.Server
                     DailyPrice currentPrice = InsertOrUpdateTodayPrice(stock);
 
                     // Pass 5 years worth of data to the models, this should be enough for any model currently.
-                    List<DailyPrice> historicPrices = this.dataContext.DailyPrices.Where(p => p.StockCode == stock.Symbol && p.Date > DateTime.Now.Date.Subtract(new TimeSpan(1825,0,0,0,0)) && p.Date < DateTime.Now.Date).OrderByDescending(p => p.Date).ToList();
-
-                    foreach(IModel model in this.registeredModels)
+                    using (StockBanditDataContext dataContext = new StockBanditDataContext())
                     {
-                        string emailBody = null;
-                        string emailSubject = null;
-                        if (model.Evaluate(stock, historicPrices.ConvertAll<ClosingPrice>(p => new ClosingPrice() { Date = p.Date, Price = p.Price, Volume = p.Volume }), currentPrice.Price, out emailBody, out emailSubject))
-                            QueueEmail(this.EmailRecipient, emailSubject, emailBody);
+                        List<DailyPrice> historicPrices =
+                            dataContext.DailyPrices.Where(
+                                p =>
+                                    p.StockCode == stock.Symbol &&
+                                    p.Date > DateTime.Now.Date.Subtract(new TimeSpan(1825, 0, 0, 0, 0)) &&
+                                    p.Date < DateTime.Now.Date).OrderByDescending(p => p.Date).ToList();
+
+                        foreach (IModel model in this.registeredModels)
+                        {
+                            string emailBody = null;
+                            string emailSubject = null;
+                            if (model.Evaluate(stock,
+                                historicPrices.ConvertAll<ClosingPrice>(
+                                    p => new ClosingPrice() {Date = p.Date, Price = p.Price, Volume = p.Volume}),
+                                currentPrice.Price, out emailBody, out emailSubject))
+                                QueueEmail(this.EmailRecipient, emailSubject, emailBody);
+                        }
                     }
                 }
             }
@@ -211,66 +223,68 @@ namespace StockBandit.Server
         private DailyPrice InsertOrUpdateTodayPrice(Quote stock)
         {
             // Find price for today
-            DailyPrice todayPrice = this.dataContext.DailyPrices.FirstOrDefault(p => p.Date == DateTime.Now.Date && p.StockCode == stock.Symbol);
-            if (todayPrice != null)
+            using (StockBanditDataContext dataContext = new StockBanditDataContext())
             {
-                todayPrice.Price = stock.LastTradePrice.Value;
-                todayPrice.Volume = stock.CurrentVolume.Value;
-            }
-            else
-            {
-                DailyPrice dailyPrice = new DailyPrice() { Date = DateTime.Now.Date, Price = stock.LastTradePrice.Value, Volume = stock.CurrentVolume.Value };
-                dailyPrice.StockCode = stock.Symbol;
-                this.dataContext.DailyPrices.InsertOnSubmit(dailyPrice);
-                todayPrice = dailyPrice;
-            }
+                DailyPrice todayPrice =
+                    dataContext.DailyPrices.FirstOrDefault(
+                        p => p.Date == DateTime.Now.Date && p.StockCode == stock.Symbol);
+                if (todayPrice != null)
+                {
+                    todayPrice.Price = stock.LastTradePrice.Value;
+                    todayPrice.Volume = stock.CurrentVolume.Value;
+                }
+                else
+                {
+                    DailyPrice dailyPrice = new DailyPrice()
+                    {
+                        Date = DateTime.Now.Date,
+                        Price = stock.LastTradePrice.Value,
+                        Volume = stock.CurrentVolume.Value
+                    };
+                    dailyPrice.StockCode = stock.Symbol;
+                    dataContext.DailyPrices.InsertOnSubmit(dailyPrice);
+                    todayPrice = dailyPrice;
+                }
 
-            this.dataContext.SubmitChanges();
-            
-            return todayPrice;
+                dataContext.SubmitChanges();
+
+                return todayPrice;
+            }
         }
 
         private void PopulateHistoricPrices()
         {
             try
             {
-                List<DailyPrice> historicPrices;
+                List<Task> updateTasks = new List<Task>();
+
                 // Get the latest prices
                 foreach (Quote quote in this.StockCodesList)
                 {
                     log.InfoFormat("Collecting Historic Prices for {0}", quote.Symbol);
-
-                    // Get the historic prices
-                    DateTime lastRetrieveDate = this.dataContext.DailyPrices.Where(p => p.StockCode == quote.Symbol && p.Date < DateTime.Today).OrderByDescending(p => p.Date).Select(p => p.Date).FirstOrDefault();                
                     
-                    // Get the historic prices from Google
-                    lock (semaphore)
+                    DateTime lastRetrieveDate = DateTime.MinValue;
+                    using (StockBanditDataContext dataContext = new StockBanditDataContext())
                     {
-                        historicPrices = this.googleHistoricWebStockEngine.Fetch(quote, lastRetrieveDate);
+                        // Get the historic prices
+                        dataContext.DailyPrices.Where(p => p.StockCode == quote.Symbol && p.Date < DateTime.Today)
+                            .OrderByDescending(p => p.Date)
+                            .Select(p => p.Date)
+                            .FirstOrDefault();
                     }
 
-                    // If different add to queue.
-                    foreach (DailyPrice dailyPrice in historicPrices)
+                    Task updateTask = Task.Factory.StartNew(() =>
                     {
-                        // Find price for today
-                        DailyPrice existingPrice = this.dataContext.DailyPrices.FirstOrDefault(p => p.Date == dailyPrice.Date && p.StockCode == quote.Symbol);
-                        if (existingPrice != null)
-                        {
-                            existingPrice.Price = dailyPrice.Price;
-                            existingPrice.Volume = dailyPrice.Volume;
-                        }
-                        else
-                        {
-                            this.dataContext.DailyPrices.InsertOnSubmit(dailyPrice);
-                        }
-
-                        this.dataContext.SubmitChanges();
-                    }
+                       GetPricesForStock(quote, lastRetrieveDate);
+                    }, TaskCreationOptions.LongRunning);
+                    updateTasks.Add(updateTask);
 
                     log.InfoFormat("Collected Historic Prices for {0}", quote.Symbol);
                 }
+
+                Task.WaitAll(updateTasks.ToArray());
             }
-            catch(System.Net.WebException)
+            catch (System.Net.WebException)
             {
                 log.Error("No internet access - unable to get prices.");
             }
@@ -281,6 +295,35 @@ namespace StockBandit.Server
             }
 
             log.Info("Finished Collecting Historic Prices");
+        }
+
+        private void GetPricesForStock(Quote quote, DateTime lastRetrieveDate)
+        {
+            List<DailyPrice> historicPrices = this.googleHistoricWebStockEngine.Fetch(quote,
+                lastRetrieveDate);
+
+            using (StockBanditDataContext dataContext = new StockBanditDataContext())
+            {
+                // If different add to queue.
+                foreach (DailyPrice dailyPrice in historicPrices)
+                {
+                    // Find price for today
+                    DailyPrice existingPrice =
+                        dataContext.DailyPrices.FirstOrDefault(
+                            p => p.Date == dailyPrice.Date && p.StockCode == quote.Symbol);
+                    if (existingPrice != null)
+                    {
+                        existingPrice.Price = dailyPrice.Price;
+                        existingPrice.Volume = dailyPrice.Volume;
+                    }
+                    else
+                    {
+                        dataContext.DailyPrices.InsertOnSubmit(dailyPrice);
+                    }
+
+                    dataContext.SubmitChanges();
+                }
+            }
         }
 
         #endregion
@@ -294,24 +337,33 @@ namespace StockBandit.Server
 
         public List<string> GetLastPrices()
         {
-            List<string> lastPrices = new List<string>();
-            foreach (var item in this.dataContext.Stocks)
+            using (StockBanditDataContext dataContext = new StockBanditDataContext())
             {
-                foreach (var price in item.DailyPrices.OrderByDescending(p => p.Date).Take(1).ToList())
-                    lastPrices.Add(string.Format("{0} - {1}: {2}p", item.StockCode, price.Date.ToShortDateString(), price.Price));
+                List<string> lastPrices = new List<string>();
+                foreach (var item in dataContext.Stocks)
+                {
+                    foreach (var price in item.DailyPrices.OrderByDescending(p => p.Date).Take(1).ToList())
+                        lastPrices.Add(string.Format("{0} - {1}: {2}p", item.StockCode, price.Date.ToShortDateString(),
+                            price.Price));
+                }
+                return lastPrices;
             }
-            return lastPrices;
         }
 
         public List<string> GetLastPriceHistories()
         {
-            List<string> lastPriceHistories = new List<string>();
-            foreach (var item in this.dataContext.Stocks)
+            using (StockBanditDataContext dataContext = new StockBanditDataContext())
             {
-                foreach (var price in item.DailyPrices.OrderByDescending(p => p.Date).Take(this.BandPeriod).ToList())
-                    lastPriceHistories.Add(string.Format("{0} - {1}: {2}p", item.StockCode, price.Date.ToShortDateString(), price.Price));
+                List<string> lastPriceHistories = new List<string>();
+                foreach (var item in dataContext.Stocks)
+                {
+                    foreach (var price in item.DailyPrices.OrderByDescending(p => p.Date).Take(this.BandPeriod).ToList()
+                        )
+                        lastPriceHistories.Add(string.Format("{0} - {1}: {2}p", item.StockCode,
+                            price.Date.ToShortDateString(), price.Price));
+                }
+                return lastPriceHistories;
             }
-            return lastPriceHistories;
         }
 
         #endregion
@@ -320,44 +372,49 @@ namespace StockBandit.Server
 
         public void AddStock(string stockCode, string stockName)
         {
-            if(string.IsNullOrEmpty(stockCode))
-                throw new ApplicationException("StockCode cannot be null");
-            if(string.IsNullOrEmpty(stockName))
-                throw new ApplicationException("StockName cannot be null");
-            Stock stock = new Stock() { StockCode = stockCode, StockName = stockName };
-            this.dataContext.Stocks.InsertOnSubmit(stock);
-            this.dataContext.SubmitChanges();
-
-            
-
-            // Now repopulate the StockCodesList
-            lock (semaphore)
+            using (StockBanditDataContext dataContext = new StockBanditDataContext())
             {
-                this.StockCodesList = new ObservableCollection<Quote>();
-                foreach (string code in this.dataContext.Stocks.Select(p => p.StockCode).ToList())
-                    this.StockCodesList.Add(new Quote(code));
+                if (string.IsNullOrEmpty(stockCode))
+                    throw new ApplicationException("StockCode cannot be null");
+                if (string.IsNullOrEmpty(stockName))
+                    throw new ApplicationException("StockName cannot be null");
+                Stock stock = new Stock() {StockCode = stockCode, StockName = stockName};
+                dataContext.Stocks.InsertOnSubmit(stock);
+                dataContext.SubmitChanges();
 
-                PopulateHistoricPrices();
+                // Now repopulate the StockCodesList
+                lock (semaphore)
+                {
+                    this.StockCodesList = new ObservableCollection<Quote>();
+                    foreach (string code in dataContext.Stocks.Select(p => p.StockCode).ToList())
+                        this.StockCodesList.Add(new Quote(code));
+
+                    PopulateHistoricPrices();
+                }
             }
         }
 
         public void DeleteStock(string stockCode)
         {
-            if (string.IsNullOrEmpty(stockCode))
-                throw new ApplicationException("StockCode cannot be null");
-            Stock stock = this.dataContext.Stocks.FirstOrDefault(s => s.StockCode.ToUpper() == stockCode.ToUpper());
-            if (stock != null)
+            using (StockBanditDataContext dataContext = new StockBanditDataContext())
             {
-                lock (semaphore)
+                if (string.IsNullOrEmpty(stockCode))
+                    throw new ApplicationException("StockCode cannot be null");
+                Stock stock = dataContext.Stocks.FirstOrDefault(s => s.StockCode.ToUpper() == stockCode.ToUpper());
+                if (stock != null)
                 {
-                    this.dataContext.DailyPrices.DeleteAllOnSubmit(this.dataContext.DailyPrices.Where(p => p.StockCode == stock.StockCode));
-                    this.dataContext.Stocks.DeleteOnSubmit(stock);
-                    this.dataContext.SubmitChanges();
+                    lock (semaphore)
+                    {
+                        dataContext.DailyPrices.DeleteAllOnSubmit(
+                            dataContext.DailyPrices.Where(p => p.StockCode == stock.StockCode));
+                        dataContext.Stocks.DeleteOnSubmit(stock);
+                        dataContext.SubmitChanges();
 
-                    // Now repopulate the StockCodesList
-                    this.StockCodesList = new ObservableCollection<Quote>();
-                    foreach (string code in this.dataContext.Stocks.Select(p => p.StockCode).ToList())
-                        this.StockCodesList.Add(new Quote(code));
+                        // Now repopulate the StockCodesList
+                        this.StockCodesList = new ObservableCollection<Quote>();
+                        foreach (string code in dataContext.Stocks.Select(p => p.StockCode).ToList())
+                            this.StockCodesList.Add(new Quote(code));
+                    }
                 }
             }
         }

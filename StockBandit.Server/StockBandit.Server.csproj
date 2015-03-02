@@ -29,6 +29,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="HtmlAgilityPack">
@@ -71,6 +72,7 @@
     </Compile>
     <Compile Include="StockEngine.cs" />
     <Compile Include="StockServer.cs" />
+    <Compile Include="ThreadedMethod.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\StockBandit.Model\StockBandit.Model.csproj">

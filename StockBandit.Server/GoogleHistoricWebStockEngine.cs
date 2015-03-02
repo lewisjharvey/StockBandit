@@ -6,6 +6,8 @@ using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace StockBandit.Server
 {
@@ -18,55 +20,69 @@ namespace StockBandit.Server
 
         public List<DailyPrice> Fetch(Quote quote, DateTime lastRetrieveTime)
         {
+            // Don't get old prices if retrieved yesterday
+            if (!ShouldCollectHistory(lastRetrieveTime))
+                return new List<DailyPrice>();
+
+            return FetchPrice(quote, lastRetrieveTime);
+        }
+
+        private List<DailyPrice> FetchPrice(Quote quote, DateTime lastRetrieveTime)
+        {
             List<DailyPrice> historicPrices = new List<DailyPrice>();
 
             string[] quoteParts = quote.Symbol.Split(new char[1] { ':' });
 
-            // Don't get old prices if retrieved yesterday
-            if(!ShouldCollectHistory(lastRetrieveTime))
-                return new List<DailyPrice>();
-
             // TODO Validation of the quote
             string url = string.Format(BASE_URL, quoteParts[1], quoteParts[0], GetCollectionPeriod(lastRetrieveTime));
 
-            // Read URL and parse
-            HttpWebRequest oReq = (HttpWebRequest)WebRequest.Create(url);
-            HttpWebResponse resp = (HttpWebResponse)oReq.GetResponse();
-            if (resp.ContentType.StartsWith("text/plain", StringComparison.InvariantCultureIgnoreCase))
+            try
             {
-                Regex matchRegex = new Regex(MATCH_LINE_REGEX); 
-                TextReader textReader = new StreamReader(resp.GetResponseStream());
 
-                // Skip the header
-                string line;
-                DateTime startingDate = DateTime.MinValue;
-
-                while ((line = textReader.ReadLine()) != null)
+                // Read URL and parse
+                HttpWebRequest oReq = (HttpWebRequest)WebRequest.Create(url);
+                HttpWebResponse resp = (HttpWebResponse)oReq.GetResponse();
+                if (resp.ContentType.StartsWith("text/plain", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    if(matchRegex.IsMatch(line))
-                    {
-                        // We know we are a date line now.
-                        // If line starts with a, we need to rework the starting date.
-                        // Split line into date and value
-                        string[] parts = line.Split(new char[1] {','});
-                        
-                        DateTime date = DateTime.MinValue;
-                        if(parts[0].StartsWith("a"))
-                        {
-                            string datePart = parts[0].Substring(1);
-                            startingDate = UnixTimeToDateTime(datePart);
-                            date = startingDate;
-                        }
-                        else
-                        {
-                            date = startingDate.AddDays(int.Parse(parts[0]));
-                        }
+                    Regex matchRegex = new Regex(MATCH_LINE_REGEX);
+                    TextReader textReader = new StreamReader(resp.GetResponseStream());
 
-                        // Now the value
-                        historicPrices.Add(new DailyPrice() { Date = date.Date, StockCode = quote.Symbol, Price = decimal.Parse(parts[1]), Volume = int.Parse(parts[2]) });
+                    // Skip the header
+                    string line;
+                    DateTime startingDate = DateTime.MinValue;
+
+                    while ((line = textReader.ReadLine()) != null)
+                    {
+                        if (matchRegex.IsMatch(line))
+                        {
+                            // We know we are a date line now.
+                            // If line starts with a, we need to rework the starting date.
+                            // Split line into date and value
+                            string[] parts = line.Split(new char[1] { ',' });
+
+                            DateTime date = DateTime.MinValue;
+                            if (parts[0].StartsWith("a"))
+                            {
+                                string datePart = parts[0].Substring(1);
+                                startingDate = UnixTimeToDateTime(datePart);
+                                date = startingDate;
+                            }
+                            else
+                            {
+                                date = startingDate.AddDays(int.Parse(parts[0]));
+                            }
+
+                            // Now the value
+                            historicPrices.Add(new DailyPrice() { Date = date.Date, StockCode = quote.Symbol, Price = decimal.Parse(parts[1]), Volume = int.Parse(parts[2]) });
+                        }
                     }
                 }
             }
+            catch
+            {
+                
+            }
+
 
             return historicPrices;
         }
