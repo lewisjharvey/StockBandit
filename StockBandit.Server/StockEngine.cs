@@ -9,6 +9,6 @@ namespace StockBandit.Server
 {
     public interface StockEngine
     {
-        void Fetch(ObservableCollection<Quote> quotes);
+        void Fetch(ObservableCollection<Stock> stocks);
     }
 }

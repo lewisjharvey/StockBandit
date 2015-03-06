@@ -7,7 +7,7 @@
     <appender name="RollingLogFileAppender" type="log4net.Appender.RollingFileAppender">
         <file value="Logs\StockBandit.Service.Log" />
         <appendToFile value="true" />
-        <datePattern value="yyyyMMdd'.log'" />
+        <datePattern value="yyyyMMdd-HH'.log'" />
         <rollingStyle value="Date" />
         <lockingModel type="log4net.Appender.FileAppender+MinimalLock" />
         <staticLogFileName value="false" />

@@ -17,22 +17,20 @@ using System.Reflection;
 using log4net;
 using StockBandit.Model;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Threading;
 using System.Linq;
 using System.ServiceModel;
+using System.Text;
 using System.Threading.Tasks;
-using StockBandit.Server.Analysis;
+using log4net.Core;
 
 namespace StockBandit.Server
 {
     public class StockServer
     {
-        //log4net
-        protected static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
         #region ServerSettings
 
-        public string DatabaseConnectionString { get; set; }
         public string EmailServer { get; set; }
         public string EmailFromAddress { get; set; }
         public string EmailUsername { get; set; }
@@ -40,30 +38,32 @@ namespace StockBandit.Server
         public int EmailPort { get; set; }
         public bool EmailSSL { get; set; }
         public string EmailRecipient { get; set; }
-        public int BandPeriod { get; set; }
-        public int PriceCheckMinutes { get; set; }
-        public bool EnableBollingerBands { get; set; }
-        public bool EnableMACD { get; set; }
         public bool EnableVolume { get; set; }
         public double AlertThreshold { get; set; }
+        public decimal MarketCapMax { get; set; }
+        public decimal MarketCapMin { get; set; }
+        public decimal PriceMin { get; set; }
+        public decimal PriceMax { get; set; }
+        public int HourToRun { get; set; }
 
         #endregion
 
-        public ObservableCollection<Quote> StockCodesList { get; set; }
+        public ObservableCollection<Stock> StockCodesList { get; set; }
 
         private EmailQueue emailQueue;
-        private Timer priceFetchTimer;
         //private Dictionary<string, List<DailyPrice>> historicPrices;
         private object semaphore = new object();
         private ServiceHost serviceHost;
-        private GoogleWebStockEngine googleWebStockEngine;
-        private GoogleHistoricWebStockEngine googleHistoricWebStockEngine;
+        private YahooHistoricWebStockEngine yahooHistoricWebStockEngine;
         private List<IModel> registeredModels;
+        private Timer priceFetchTimer;
+        private LogQueue logQueue;
 
         #region StartupProcedures
 
         public StockServer()
         {
+            this.logQueue = new LogQueue(1000);
             this.serviceHost = new ServiceHost(new BanditService(this));
         }
 
@@ -77,31 +77,29 @@ namespace StockBandit.Server
                 if ((this.EmailServer.Trim().Length > 0) && (this.EmailFromAddress.Trim().Length > 0))
                     this.emailQueue = new EmailQueue(this, this.EmailServer, this.EmailPort, this.EmailUsername, this.EmailPassword, this.EmailFromAddress, this.EmailSSL, 1000);
                 else
-                    log.Info("Email not configured.");
+                    this.logQueue.QueueLogEntry(new LogEntry(DateTime.Now, LogType.Info, "Email not configured."));
 
                 // Convert the stocks to a list
-                this.StockCodesList = new ObservableCollection<Quote>();
+                this.StockCodesList = new ObservableCollection<Stock>();
                 // Setup google for querying
-                this.googleWebStockEngine = new GoogleWebStockEngine();
-                this.googleHistoricWebStockEngine = new GoogleHistoricWebStockEngine();
+                this.yahooHistoricWebStockEngine = new YahooHistoricWebStockEngine(this.logQueue);
 
                 using (StockBanditDataContext dataContext = new StockBanditDataContext())
                 {
-                    foreach (string stockCode in dataContext.Stocks.Select(p => p.StockCode).ToList())
+                    foreach (var stock in dataContext.Stocks.Where(s => s.Active))
                     {
-                        this.StockCodesList.Add(new Quote(stockCode));
+                        if (stock.MarketCap > this.MarketCapMin && stock.MarketCap < this.MarketCapMax)
+                            this.StockCodesList.Add(stock);
                     }
                 }
 
                 // Get all the historical data and populate
-                PopulateHistoricPrices();
                 RegisterModels();
-
                 StartPriceFetchTimer();
             }
             catch (Exception ex)
             {
-                log.FatalFormat("Error starting server - {0}", ex);
+                this.logQueue.QueueLogEntry(new LogEntry(DateTime.Now, LogType.Fatal, string.Format("Error starting server - {0}", ex)));
                 return false;
             }
             return true;
@@ -110,28 +108,31 @@ namespace StockBandit.Server
         private void RegisterModels()
         {
             this.registeredModels = new List<IModel>();
-            if(this.EnableBollingerBands)
-                this.registeredModels.Add(new BollingerBandsModel(this.BandPeriod));
-            if(this.EnableMACD)
-                this.registeredModels.Add(new MovingAverageConvergenceDivergenceModel());
             if (this.EnableVolume)
-                this.registeredModels.Add(new VolumeModel(this.AlertThreshold));
+                this.registeredModels.Add(new VolumeModel(this.AlertThreshold, this.logQueue));
         }
 
         private void StartPriceFetchTimer()
         {
             // Create a callback for the timer 
             AutoResetEvent autoEvent = new AutoResetEvent(false);
-            TimerCallback timerDelegate = new TimerCallback(m => PriceFetchTimerElapsed());
+            //TimerCallback timerDelegate = new TimerCallback(m => PriceFetchTimerElapsed());
 
             // Create a timer that signals the delegate to invoke 
-            log.Info("Started Position Reset Timer");
-            priceFetchTimer = new Timer(timerDelegate, autoEvent, 0, this.PriceCheckMinutes * 60 * 1000);
+            DateTime now = DateTime.Now;
+            DateTime today = now.Date;
+            DateTime nextRun = today.AddHours(this.HourToRun).AddDays(now.Hour >= this.HourToRun ? 1 : 0);
+            this.logQueue.QueueLogEntry(new LogEntry(DateTime.Now, LogType.Info, string.Format("Started Position Reset Timer. Next run time: {0}", nextRun)));
+
+            this.priceFetchTimer = new Timer(PriceFetchTimerElapsed, autoEvent, nextRun - DateTime.Now, TimeSpan.FromHours(24));
         }
         
         public bool StopServer()
         {
             emailQueue.StopProcessingQueue();
+
+            this.logQueue.QueueLogEntry(new LogEntry(DateTime.Now, LogType.Info, "Server Stopped."));
+            this.logQueue.StopProcessingQueue();
             return true;
         }
 
@@ -139,56 +140,97 @@ namespace StockBandit.Server
 
         #region Actions
 
-        public void PriceFetchTimerElapsed()
+        public void PriceFetchTimerElapsed(object sender)
         {
             if (DateTime.Now.DayOfWeek == DayOfWeek.Saturday || DateTime.Now.DayOfWeek == DayOfWeek.Sunday)
                 return;
 
             try
             {
-                // Get the google current price
-                lock (semaphore)
-                {
-                    // Get the latest prices
-                    this.googleWebStockEngine.Fetch(this.StockCodesList);
-                }
+                PopulateHistoricPrices();
 
-                // If different add to queue.
-                foreach (Quote stock in this.StockCodesList)
-                {
-                    DailyPrice currentPrice = InsertOrUpdateTodayPrice(stock);
+                StringBuilder resultStringBuilder = new StringBuilder();
+                string resultString = null;
 
-                    // Pass 5 years worth of data to the models, this should be enough for any model currently.
-                    using (StockBanditDataContext dataContext = new StockBanditDataContext())
+                foreach (Stock stock in this.StockCodesList)
+                {
+                    if (!stock.Silenced)
+                        GetPricesAndEvaluate(stock, out resultString);
+                    else
                     {
-                        List<DailyPrice> historicPrices =
-                            dataContext.DailyPrices.Where(
-                                p =>
-                                    p.StockCode == stock.Symbol &&
-                                    p.Date > DateTime.Now.Date.Subtract(new TimeSpan(1825, 0, 0, 0, 0)) &&
-                                    p.Date < DateTime.Now.Date).OrderByDescending(p => p.Date).ToList();
-
-                        foreach (IModel model in this.registeredModels)
+                        // If it is silenced, has it been 30 days?
+                        if (stock.LastAlertTime.GetValueOrDefault() < DateTime.Now.AddDays(-30))
                         {
-                            string emailBody = null;
-                            string emailSubject = null;
-                            if (model.Evaluate(stock,
-                                historicPrices.ConvertAll<ClosingPrice>(
-                                    p => new ClosingPrice() {Date = p.Date, Price = p.Price, Volume = p.Volume}),
-                                currentPrice.Price, out emailBody, out emailSubject))
-                                QueueEmail(this.EmailRecipient, emailSubject, emailBody);
+                            GetPricesAndEvaluate(stock, out resultString);
+
+                            // Now reset so it is checked again tomorrow.
+                            ResetStockSilenceFlags(stock);
                         }
                     }
+
+                    if (!string.IsNullOrEmpty(resultString))
+                    {
+                        resultStringBuilder.AppendLine(resultString);
+                        SilenceStock(stock);
+                    }
                 }
-            }
-            catch (System.Net.WebException)
-            {
-                log.Error("No internet access - unable to get prices.");
+
+                QueueEmail(this.EmailRecipient, "DAILY STOCK DIGEST", resultString.ToString());
             }
             catch (Exception e)
             {
-                log.Error("Error in PriceAnalysisTimerElapsed", e);
+                this.logQueue.QueueLogEntry(new LogEntry(DateTime.Now, LogType.Error, string.Format("Error in PriceAnalysisTimerElapsed: {0}", e)));
                 QueueEmail(this.EmailRecipient, "System Error", e.ToString());
+            }
+        }
+
+        private void SilenceStock(Stock stock)
+        {
+            using (StockBanditDataContext dataContext = new StockBanditDataContext())
+            {
+                Stock dalStock = dataContext.Stocks.Single(s => s.StockCode == stock.StockCode);
+                dalStock.Silenced = true;
+                dalStock.LastAlertTime = DateTime.Now;
+                dataContext.SubmitChanges();
+
+                stock.Silenced = true;
+                stock.LastAlertTime = DateTime.Now;
+            }
+        }
+
+        private void ResetStockSilenceFlags(Stock stock)
+        {
+            using (StockBanditDataContext dataContext = new StockBanditDataContext())
+            {
+                Stock dalStock = dataContext.Stocks.Single(s => s.StockCode == stock.StockCode);
+                dalStock.Silenced = false;
+                dalStock.LastAlertTime = null;
+                dataContext.SubmitChanges();
+
+                stock.Silenced = false;
+                stock.LastAlertTime = null;
+            }
+        }
+
+        private void GetPricesAndEvaluate(Stock stock, out string resultString)
+        {
+            resultString = null;
+
+            using (StockBanditDataContext dataContext = new StockBanditDataContext())
+            {
+                List<DailyPrice> historicPrices =
+                    dataContext.DailyPrices.Where(
+                        p =>
+                            p.StockCode == stock.StockCode &&
+                            p.Date > DateTime.Now.Date.Subtract(new TimeSpan(1825, 0, 0, 0, 0)) &&
+                            p.Date <= DateTime.Now.Date).OrderByDescending(p => p.Date).ToList();
+
+                if (historicPrices.Count > 0 && historicPrices.First().Close > this.PriceMin &&
+                    historicPrices.First().Close < this.PriceMax)
+                {
+                    foreach (IModel model in this.registeredModels)
+                        model.Evaluate(stock, historicPrices, out resultString);
+                }               
             }
         }
 
@@ -203,7 +245,7 @@ namespace StockBandit.Server
                 }
                 catch (Exception e)
                 {
-                    log.ErrorFormat("Exception in StockServer.SendStartedEmail - Exception: {0}", e.ToString());
+                    this.logQueue.QueueLogEntry(new LogEntry(DateTime.Now, LogType.Error, string.Format("Exception in StockServer.SendStartedEmail - Exception: {0}", e.ToString())));
                 }
             }
         }
@@ -219,39 +261,7 @@ namespace StockBandit.Server
         #endregion
 
         #region PrivateHelpders
-        
-        private DailyPrice InsertOrUpdateTodayPrice(Quote stock)
-        {
-            // Find price for today
-            using (StockBanditDataContext dataContext = new StockBanditDataContext())
-            {
-                DailyPrice todayPrice =
-                    dataContext.DailyPrices.FirstOrDefault(
-                        p => p.Date == DateTime.Now.Date && p.StockCode == stock.Symbol);
-                if (todayPrice != null)
-                {
-                    todayPrice.Price = stock.LastTradePrice.Value;
-                    todayPrice.Volume = stock.CurrentVolume.Value;
-                }
-                else
-                {
-                    DailyPrice dailyPrice = new DailyPrice()
-                    {
-                        Date = DateTime.Now.Date,
-                        Price = stock.LastTradePrice.Value,
-                        Volume = stock.CurrentVolume.Value
-                    };
-                    dailyPrice.StockCode = stock.Symbol;
-                    dataContext.DailyPrices.InsertOnSubmit(dailyPrice);
-                    todayPrice = dailyPrice;
-                }
-
-                dataContext.SubmitChanges();
-
-                return todayPrice;
-            }
-        }
-
+                
         private void PopulateHistoricPrices()
         {
             try
@@ -259,47 +269,50 @@ namespace StockBandit.Server
                 List<Task> updateTasks = new List<Task>();
 
                 // Get the latest prices
-                foreach (Quote quote in this.StockCodesList)
+                foreach (Stock stock in this.StockCodesList)
                 {
-                    log.InfoFormat("Collecting Historic Prices for {0}", quote.Symbol);
-                    
-                    DateTime lastRetrieveDate = DateTime.MinValue;
+                    this.logQueue.QueueLogEntry(new LogEntry(DateTime.Now, LogType.Info, string.Format("Collecting Historic Prices for {0}", stock.StockCode)));
+
+                    DateTime lastRetrieveDate;
                     using (StockBanditDataContext dataContext = new StockBanditDataContext())
                     {
                         // Get the historic prices
-                        dataContext.DailyPrices.Where(p => p.StockCode == quote.Symbol && p.Date < DateTime.Today)
+                        lastRetrieveDate = dataContext.DailyPrices.Where(p => p.StockCode == stock.StockCode && p.Date <= DateTime.Today)
                             .OrderByDescending(p => p.Date)
                             .Select(p => p.Date)
                             .FirstOrDefault();
                     }
 
+                    if (lastRetrieveDate == default(DateTime))
+                        lastRetrieveDate = DateTime.Now.AddDays(-35);
+
                     Task updateTask = Task.Factory.StartNew(() =>
                     {
-                       GetPricesForStock(quote, lastRetrieveDate);
+                       GetPricesForStock(stock, lastRetrieveDate);
                     }, TaskCreationOptions.LongRunning);
                     updateTasks.Add(updateTask);
 
-                    log.InfoFormat("Collected Historic Prices for {0}", quote.Symbol);
+                    this.logQueue.QueueLogEntry(new LogEntry(DateTime.Now, LogType.Info, string.Format("Collected Historic Prices for {0}", stock.StockCode)));
                 }
 
                 Task.WaitAll(updateTasks.ToArray());
             }
             catch (System.Net.WebException)
             {
-                log.Error("No internet access - unable to get prices.");
+                this.logQueue.QueueLogEntry(new LogEntry(DateTime.Now, LogType.Error, "No internet access - unable to get prices."));
             }
             catch (Exception e)
             {
-                log.Error("Error in PopulateHistoricPrices", e);
+                this.logQueue.QueueLogEntry(new LogEntry(DateTime.Now, LogType.Error, string.Format("Error in PopulateHistoricPrices: {0}", e)));
                 QueueEmail(this.EmailRecipient, "System Error", e.ToString());
             }
 
-            log.Info("Finished Collecting Historic Prices");
+            this.logQueue.QueueLogEntry(new LogEntry(DateTime.Now, LogType.Info, "Finished Collecting Historic Prices"));
         }
 
-        private void GetPricesForStock(Quote quote, DateTime lastRetrieveDate)
+        private void GetPricesForStock(Stock stock, DateTime lastRetrieveDate)
         {
-            List<DailyPrice> historicPrices = this.googleHistoricWebStockEngine.Fetch(quote,
+            List<DailyPrice> historicPrices = this.yahooHistoricWebStockEngine.Fetch(stock,
                 lastRetrieveDate);
 
             using (StockBanditDataContext dataContext = new StockBanditDataContext())
@@ -310,11 +323,15 @@ namespace StockBandit.Server
                     // Find price for today
                     DailyPrice existingPrice =
                         dataContext.DailyPrices.FirstOrDefault(
-                            p => p.Date == dailyPrice.Date && p.StockCode == quote.Symbol);
+                            p => p.Date == dailyPrice.Date && p.StockCode == stock.StockCode);
                     if (existingPrice != null)
                     {
-                        existingPrice.Price = dailyPrice.Price;
+                        existingPrice.High = dailyPrice.High;
+                        existingPrice.Low = dailyPrice.Low;
+                        existingPrice.Open = dailyPrice.Open;
+                        existingPrice.Close = dailyPrice.Close;
                         existingPrice.Volume = dailyPrice.Volume;
+                        existingPrice.AdjustedClose = dailyPrice.AdjustedClose;
                     }
                     else
                     {
@@ -337,32 +354,17 @@ namespace StockBandit.Server
 
         public List<string> GetLastPrices()
         {
-            using (StockBanditDataContext dataContext = new StockBanditDataContext())
+            using (var dataContext = new StockBanditDataContext())
             {
-                List<string> lastPrices = new List<string>();
-                foreach (var item in dataContext.Stocks)
-                {
-                    foreach (var price in item.DailyPrices.OrderByDescending(p => p.Date).Take(1).ToList())
-                        lastPrices.Add(string.Format("{0} - {1}: {2}p", item.StockCode, price.Date.ToShortDateString(),
-                            price.Price));
-                }
-                return lastPrices;
+                return (from item in dataContext.Stocks from price in item.DailyPrices.OrderByDescending(p => p.Date).Take(1).ToList() select string.Format("{0} - {1}: {2}p", item.StockCode, price.Date.ToShortDateString(), price.Close)).ToList();
             }
         }
 
         public List<string> GetLastPriceHistories()
         {
-            using (StockBanditDataContext dataContext = new StockBanditDataContext())
+            using (var dataContext = new StockBanditDataContext())
             {
-                List<string> lastPriceHistories = new List<string>();
-                foreach (var item in dataContext.Stocks)
-                {
-                    foreach (var price in item.DailyPrices.OrderByDescending(p => p.Date).Take(this.BandPeriod).ToList()
-                        )
-                        lastPriceHistories.Add(string.Format("{0} - {1}: {2}p", item.StockCode,
-                            price.Date.ToShortDateString(), price.Price));
-                }
-                return lastPriceHistories;
+                return (from item in dataContext.Stocks from price in item.DailyPrices.OrderByDescending(p => p.Date).Take(10).ToList() select string.Format("{0} - {1}: {2}p", item.StockCode, price.Date.ToShortDateString(), price.Close)).ToList();
             }
         }
 
@@ -378,16 +380,16 @@ namespace StockBandit.Server
                     throw new ApplicationException("StockCode cannot be null");
                 if (string.IsNullOrEmpty(stockName))
                     throw new ApplicationException("StockName cannot be null");
-                Stock stock = new Stock() {StockCode = stockCode, StockName = stockName};
-                dataContext.Stocks.InsertOnSubmit(stock);
+                var newStock = new Stock() {StockCode = stockCode, StockName = stockName};
+                dataContext.Stocks.InsertOnSubmit(newStock);
                 dataContext.SubmitChanges();
 
                 // Now repopulate the StockCodesList
                 lock (semaphore)
                 {
-                    this.StockCodesList = new ObservableCollection<Quote>();
-                    foreach (string code in dataContext.Stocks.Select(p => p.StockCode).ToList())
-                        this.StockCodesList.Add(new Quote(code));
+                    this.StockCodesList = new ObservableCollection<Stock>();
+                    foreach (var stock in dataContext.Stocks)
+                        this.StockCodesList.Add(stock);
 
                     PopulateHistoricPrices();
                 }
@@ -400,20 +402,20 @@ namespace StockBandit.Server
             {
                 if (string.IsNullOrEmpty(stockCode))
                     throw new ApplicationException("StockCode cannot be null");
-                Stock stock = dataContext.Stocks.FirstOrDefault(s => s.StockCode.ToUpper() == stockCode.ToUpper());
-                if (stock != null)
+                Stock deletedStock = dataContext.Stocks.FirstOrDefault(s => s.StockCode.ToUpper() == stockCode.ToUpper());
+                if (deletedStock != null)
                 {
                     lock (semaphore)
                     {
                         dataContext.DailyPrices.DeleteAllOnSubmit(
-                            dataContext.DailyPrices.Where(p => p.StockCode == stock.StockCode));
-                        dataContext.Stocks.DeleteOnSubmit(stock);
+                            dataContext.DailyPrices.Where(p => p.StockCode == deletedStock.StockCode));
+                        dataContext.Stocks.DeleteOnSubmit(deletedStock);
                         dataContext.SubmitChanges();
 
                         // Now repopulate the StockCodesList
-                        this.StockCodesList = new ObservableCollection<Quote>();
-                        foreach (string code in dataContext.Stocks.Select(p => p.StockCode).ToList())
-                            this.StockCodesList.Add(new Quote(code));
+                        this.StockCodesList = new ObservableCollection<Stock>();
+                        foreach (var stock in dataContext.Stocks)
+                            this.StockCodesList.Add(stock);
                     }
                 }
             }

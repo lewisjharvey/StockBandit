@@ -27,7 +27,6 @@ namespace StockBandit.Server
         // Error properties
         public List<string> ErrorMessages { get; private set; }
 
-        private string databaseConnectionString;
         private string emailServer;
         private string emailFromAddress;
         private string emailUsername;
@@ -35,12 +34,13 @@ namespace StockBandit.Server
         private int? emailPort;
         private bool? emailSSL;
         private string emailRecipient;
-        private int? bandPeriod;
-        private int? priceCheckMinutes;
-        private bool? enableBollingerBands;
-        private bool? enableMACD;
         private bool? enableVolume;
         private double? alertThreshold;
+        private decimal? marketCapMax;
+        private decimal? marketCapMin;
+        private decimal? priceMax;
+        private decimal? priceMin;
+        private int? hourToRun;
 
         #endregion
 
@@ -69,8 +69,6 @@ namespace StockBandit.Server
 
             // Now instantiate the correct site type based on the configuration.
             StockServer server = new StockServer();
-
-            server.DatabaseConnectionString = this.databaseConnectionString;
             server.EmailServer = this.emailServer;
             server.EmailFromAddress = this.emailFromAddress;
             server.EmailUsername = this.emailUsername;
@@ -78,20 +76,19 @@ namespace StockBandit.Server
             server.EmailPort = this.emailPort.Value;
             server.EmailSSL = this.emailSSL.Value;
             server.EmailRecipient = this.emailRecipient;
-            server.BandPeriod = this.bandPeriod.Value;
-            server.PriceCheckMinutes = this.priceCheckMinutes.Value;
-            server.EnableBollingerBands = this.enableBollingerBands.Value;
-            server.EnableMACD = this.enableMACD.Value;
             server.EnableVolume = this.enableVolume.Value;
             server.AlertThreshold = this.alertThreshold.Value;
+            server.MarketCapMin = this.marketCapMin.Value;
+            server.MarketCapMax = this.marketCapMax.Value;
+            server.PriceMax = this.priceMax.Value;
+            server.PriceMin = this.priceMin.Value;
+            server.HourToRun = this.hourToRun.Value;
 
             return server;
         }
 
         private void LoadConfigurationSettings()
         {
-            this.databaseConnectionString = ConfigurationManager.ConnectionStrings["StockBandit.Server.Properties.Settings.StockBanditConnectionString"].ConnectionString;
-
             LoadConfigurationSetting("EmailServer", out emailServer);
             LoadConfigurationSetting("EmailFromAddress", out emailFromAddress);
             LoadConfigurationSetting("EmailUsername", out emailUsername);
@@ -99,12 +96,13 @@ namespace StockBandit.Server
             LoadConfigurationSetting("EmailPort", out emailPort);
             LoadConfigurationSetting("EmailSSL", out emailSSL);
             LoadConfigurationSetting("EmailRecipient", out emailRecipient);
-            LoadConfigurationSetting("BandPeriod", out bandPeriod);
-            LoadConfigurationSetting("PriceCheckMinutes", out priceCheckMinutes);
-            LoadConfigurationSetting("EnableBollingerBands", out enableBollingerBands);
-            LoadConfigurationSetting("EnableMACD", out enableMACD);
             LoadConfigurationSetting("EnableVolume", out enableVolume);
             LoadConfigurationSetting("AlertThreshold", out alertThreshold);
+            LoadConfigurationSetting("MarketCapMax", out marketCapMax);
+            LoadConfigurationSetting("MarketCapMin", out marketCapMin);
+            LoadConfigurationSetting("PriceMax", out priceMax);
+            LoadConfigurationSetting("PriceMin", out priceMin);
+            LoadConfigurationSetting("HourToRun", out hourToRun);
         }
 
         #region Configuration setting loaders
@@ -165,8 +163,6 @@ namespace StockBandit.Server
             List<string> errorMessages = new List<string>();
 
             // Firstly required for all types of server.
-            if (string.IsNullOrEmpty(this.databaseConnectionString))
-                errorMessages.Add("The connection string for the database is not set.");
             if (string.IsNullOrEmpty(this.emailServer))
                 errorMessages.Add("The EmailServer configuration setting is not set.");
             if (string.IsNullOrEmpty(this.emailFromAddress))
@@ -181,14 +177,16 @@ namespace StockBandit.Server
                 errorMessages.Add("The EmailSSL configuration setting is not set.");
             if (string.IsNullOrEmpty(this.emailRecipient))
                 errorMessages.Add("The EmailRecipient configuration setting is not set.");
-            if (!this.bandPeriod.HasValue)
-                errorMessages.Add("The BandPeriod configuration setting is not set.");
-            if (!this.priceCheckMinutes.HasValue)
-                errorMessages.Add("The PriceCheckMinutes configuration setting is not set.");
-            if (!this.enableBollingerBands.HasValue)
-                errorMessages.Add("The EnableBollingerBands configuration setting is not set.");
-            if (!this.enableMACD.HasValue)
-                errorMessages.Add("The EnableMACD configuration setting is not set.");
+            if (!this.marketCapMin.HasValue)
+                errorMessages.Add("The MarketCapMin configuration setting is not set.");
+            if (!this.marketCapMax.HasValue)
+                errorMessages.Add("The MarketCapMax configuration setting is not set.");
+            if (!this.priceMin.HasValue)
+                errorMessages.Add("The PriceMin configuration setting is not set.");
+            if (!this.priceMax.HasValue)
+                errorMessages.Add("The PriceMax configuration setting is not set.");
+            if (!this.hourToRun.HasValue)
+                errorMessages.Add("The HourToRun configuration setting is not set.");
 
             this.ErrorMessages.AddRange(errorMessages);
 

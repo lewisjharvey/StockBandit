@@ -52,7 +52,7 @@ namespace StockBandit.Console
                             System.Console.WriteLine(server.SayHello());
                             break;
                         case "FORCEPRICES":
-                            server.PriceFetchTimerElapsed();
+                            server.PriceFetchTimerElapsed(null);
                             foreach (string priceOutput in server.GetLastPrices())
                                 System.Console.WriteLine(priceOutput);
                             break;

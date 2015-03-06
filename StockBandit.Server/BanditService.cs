@@ -57,7 +57,7 @@ namespace StockBandit.Server
 
         public void ForcePrices()
         {
-            this.stockServer.PriceFetchTimerElapsed();
+            this.stockServer.PriceFetchTimerElapsed(this);
         }
 
         

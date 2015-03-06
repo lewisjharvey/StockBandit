@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- The name of the product -->
+<?define Name = "StockBandit Service" ?>
+<!-- The manufacturer, for setup package publisher and folder info -->
+<?define Manufacturer = "Lewis Harvey" ?>
+<!-- The version number of this setup package-->
+<?define Version = "1.0.0" ?>
+<!-- The description -->
+<?define Description = "Alerts with stock recommendations based on a specific strategy." ?>
+<!-- UpgradeCode must be unique and not changed once the first version of the program is installed. -->
+<?define UpgradeCode = "{ab3b47e6-e665-45e8-b378-188d5a139eff}" ?>
+
+<?if $(var.Platform) = x64 ?>
+<?define Win64 = "yes" ?>
+<?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
+<?else ?>
+<?define Win64 = "no" ?>
+<?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
+<?endif ?>
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="*" Name="$(var.Name)" Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.UpgradeCode)" Version="$(var.Version)" Language="1033" Codepage="1252">
+    <!-- Create a folder inside Talk Sharp called Test Service -->
+    <Package Id="*" Keywords="Installer" Description="A compliance solution for trading platforms."
+		  Manufacturer="$(var.Manufacturer)" InstallerVersion="100" Languages="1033" Compressed='yes' SummaryCodepage="1252"/>
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+    <UIRef Id="WixUI_InstallDir" />
+    <!-- Create a folder inside Talk Sharp called Test Service -->
+    <Media Id="1" Cabinet="StockBanditService.cab" EmbedCab="yes" />
+    <!-- Allow upgrades and prevent downgrades -->
+    <MajorUpgrade DowngradeErrorMessage="A later version of [ProductName] is already installed. Setup will now exit." />
+    <!-- Define the directory structure -->
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="$(var.PlatformProgramFilesFolder)">
+        <!-- Create a folder inside program files called Talk Sharp -->
+        <Directory Id="ROOTDIRECTORY" Name="$(var.Manufacturer)">
+          <!-- Create a folder inside Talk Sharp called Test Service -->
+          <Directory Id="INSTALLFOLDER" Name="$(var.Name)">
+            <Component Id="$(var.StockBandit.Service.TargetFileName).config" Win64="$(var.Win64)">
+              <File Id="$(var.StockBandit.Service.TargetFileName).config" Name="$(var.StockBandit.Service.TargetFileName).config" DiskId="1" Source="$(var.StockBandit.Service.TargetDir)\$(var.StockBandit.Service.TargetFileName).config" KeyPath='yes' Vital="yes" />
+            </Component>
+            <Component Id="$(var.StockBandit.Service.TargetFileName).log4net" Win64="$(var.Win64)">
+              <File Id="$(var.StockBandit.Service.TargetFileName).log4net" Name="$(var.StockBandit.Service.TargetFileName).log4net" DiskId="1" Source="$(var.StockBandit.Service.TargetDir)\$(var.StockBandit.Service.TargetFileName).log4net" KeyPath='yes' Vital="yes" />
+            </Component>
+            <Component Id="log4net.dll" Win64="$(var.Win64)">
+              <File Id="log4net.dll" Name="log4net.dll" DiskId="1" Source="$(var.StockBandit.Service.TargetDir)\log4net.dll" KeyPath='yes' Vital="yes" />
+            </Component>
+            <Component Id="StockBandit.Model.dll" Win64="$(var.Win64)">
+              <File Id="StockBandit.Model.dll" Name="StockBandit.Model.dll" DiskId="1" Source="$(var.StockBandit.Service.TargetDir)\StockBandit.Model.dll" KeyPath='yes' Vital="yes" />
+            </Component>
+            <Component Id="StockBandit.Server.dll" Win64="$(var.Win64)">
+              <File Id="StockBandit.Server.dll" Name="StockBandit.Server.dll" DiskId="1" Source="$(var.StockBandit.Service.TargetDir)\StockBandit.Server.dll" KeyPath='yes' Vital="yes" />
+            </Component>
+            <Component Id="$(var.StockBandit.Service.TargetFileName)" Win64="$(var.Win64)">
+              <!-- Copies the TestService.exe file using the project reference preprocessor variables -->
+              <File Id="$(var.StockBandit.Service.TargetFileName)" Source="$(var.StockBandit.Service.TargetPath)" KeyPath="yes" DiskId="1" />
+              <!-- Remove all files from the INSTALLFOLDER on uninstall -->
+              <RemoveFile Id="ALLFILES" Name="*.*" On="both" />
+              <!-- Tell WiX to install the Service -->
+              <ServiceInstall Id="ServiceInstaller"
+                              Type="ownProcess"
+                              Name="$(var.StockBandit.Service.TargetFileName)"
+                              DisplayName="$(var.Name)"
+                              Description="$(var.Description)"
+                              Start="auto"
+                              Account="LocalSystem"
+                              ErrorControl="normal"
+                              Interactive="no"
+                              Vital="yes" />
+              <!-- Tell WiX to start the Service -->
+              <ServiceControl Id="RemoveService" Stop="uninstall" Remove="uninstall" Name="$(var.StockBandit.Service.TargetFileName)" Wait="yes" />
+            </Component>
+          </Directory>
+        </Directory>
+      </Directory>
+    </Directory>
+    <!-- Tell WiX to install the files -->
+    <Feature Id="MainApplication" Title="Main Application" Level="1">
+      <ComponentRef Id="$(var.StockBandit.Service.TargetFileName)" />
+      <ComponentRef Id="$(var.StockBandit.Service.TargetFileName).config" />
+      <ComponentRef Id="$(var.StockBandit.Service.TargetFileName).log4net" />
+      <ComponentRef Id="log4net.dll" />
+      <ComponentRef Id="StockBandit.Model.dll" />
+      <ComponentRef Id="StockBandit.Server.dll" />
+    </Feature>
+  </Product>
+</Wix>
