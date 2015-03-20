@@ -15,6 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockBandit.Client.Console"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{87F795DA-3508-4909-AE91-98BB3C58CC17}"
 	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
 		GlobalAssemblyInfo.cs = GlobalAssemblyInfo.cs
 		ReadMe.txt = ReadMe.txt
 	EndProjectSection

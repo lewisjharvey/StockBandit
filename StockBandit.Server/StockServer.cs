@@ -175,7 +175,7 @@ namespace StockBandit.Server
                     }
                 }
 
-                QueueEmail(this.EmailRecipient, "DAILY STOCK DIGEST", resultString.ToString());
+                QueueEmail(this.EmailRecipient, "DAILY STOCK DIGEST", resultStringBuilder.ToString());
             }
             catch (Exception e)
             {
