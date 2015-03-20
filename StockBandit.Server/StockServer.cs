@@ -150,10 +150,11 @@ namespace StockBandit.Server
                 PopulateHistoricPrices();
 
                 StringBuilder resultStringBuilder = new StringBuilder();
-                string resultString = null;
 
                 foreach (Stock stock in this.StockCodesList)
                 {
+                    string resultString = null;
+
                     if (!stock.Silenced)
                         GetPricesAndEvaluate(stock, out resultString);
                     else
