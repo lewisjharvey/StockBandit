@@ -1,4 +1,15 @@
-﻿using System.Reflection;
+﻿#region © Copyright
+// <copyright file="AssemblyInfo.cs" company="Lewis Harvey">
+//      Copyright (c) Lewis Harvey. All rights reserved.
+//      This software is provided "as is" without warranty of any kind, express or implied, 
+//      including but not limited to warranties of merchantability and fitness for a particular 
+//      purpose. The authors do not support the Software, nor do they warrant
+//      that the Software will meet your requirements or that the operation of the Software will
+//      be uninterrupted or error free or that any defects will be corrected.
+// </copyright>
+#endregion
+
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -7,12 +18,6 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyTitle("StockBandit.Model")]
 [assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("StockBandit.Model")]
-[assembly: AssemblyCopyright("Copyright ©  2013")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
@@ -21,16 +26,3 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("bb264e2c-1372-4ee7-973e-460ebfa73202")]
-
-// Version information for an assembly consists of the following four values:
-//
-//      Major Version
-//      Minor Version 
-//      Build Number
-//      Revision
-//
-// You can specify all the values or you can default the Build and Revision Numbers 
-// by using the '*' as shown below:
-// [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]

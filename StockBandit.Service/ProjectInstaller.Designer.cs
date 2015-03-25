@@ -1,11 +1,35 @@
-﻿namespace StockBandit.Service
+﻿#region © Copyright
+// <copyright file="ProjectInstaller.Designer.cs" company="Lewis Harvey">
+//      Copyright (c) Lewis Harvey. All rights reserved.
+//      This software is provided "as is" without warranty of any kind, express or implied, 
+//      including but not limited to warranties of merchantability and fitness for a particular 
+//      purpose. The authors do not support the Software, nor do they warrant
+//      that the Software will meet your requirements or that the operation of the Software will
+//      be uninterrupted or error free or that any defects will be corrected.
+// </copyright>
+#endregion
+
+namespace StockBandit.Service
 {
-    partial class ProjectInstaller
+    /// <summary>
+    /// The designer file for the service installer
+    /// </summary>
+    public partial class ProjectInstaller
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        /// The service process installer for the setup project
+        /// </summary>
+        private System.ServiceProcess.ServiceProcessInstaller serviceProcessInstaller1;
+
+        /// <summary>
+        /// The service installer for the setup project
+        /// </summary>
+        private System.ServiceProcess.ServiceInstaller serviceInstaller1;
 
         /// <summary> 
         /// Clean up any resources being used.
@@ -13,10 +37,11 @@
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing && (this.components != null))
             {
-                components.Dispose();
+                this.components.Dispose();
             }
+
             base.Dispose(disposing);
         }
 
@@ -51,8 +76,5 @@
         }
 
         #endregion
-
-        private System.ServiceProcess.ServiceProcessInstaller serviceProcessInstaller1;
-        private System.ServiceProcess.ServiceInstaller serviceInstaller1;
     }
 }

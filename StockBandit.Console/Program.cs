@@ -1,31 +1,52 @@
-﻿using System;
+﻿#region © Copyright
+// <copyright file="Program.cs" company="Lewis Harvey">
+//      Copyright (c) Lewis Harvey. All rights reserved.
+//      This software is provided "as is" without warranty of any kind, express or implied, 
+//      including but not limited to warranties of merchantability and fitness for a particular 
+//      purpose. The authors do not support the Software, nor do they warrant
+//      that the Software will meet your requirements or that the operation of the Software will
+//      be uninterrupted or error free or that any defects will be corrected.
+// </copyright>
+#endregion
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 using log4net;
-using System.Reflection;
 using StockBandit.Server;
 
 namespace StockBandit.Console
 {
-    class Program
+    /// <summary>
+    /// Encapsulates the main program for the application.
+    /// </summary>
+    public class Program
     {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        /// <summary>
+        /// The log used to start the logging engine.
+        /// </summary>
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        static void Main(string[] args)
+        /// <summary>
+        /// The main entry point for the application
+        /// </summary>
+        /// <param name="args">Arguments passed at start up</param>
+        private static void Main(string[] args)
         {
             System.Console.Title = "Stock Bandit Console";
 
-            log.Info("*********** Stock Bandit Server Console Started ***********");
-            log.InfoFormat("Service Version: {0}", Assembly.GetExecutingAssembly().GetName().Version.ToString(4));
-            log.InfoFormat("Running on {0} ({1})", System.Environment.MachineName, System.Environment.OSVersion.VersionString);
+            Log.Info("*********** Stock Bandit Server Console Started ***********");
+            Log.InfoFormat("Service Version: {0}", Assembly.GetExecutingAssembly().GetName().Version.ToString(4));
+            Log.InfoFormat("Running on {0} ({1})", System.Environment.MachineName, System.Environment.OSVersion.VersionString);
 
-            string cmd = "";
+            string cmd = string.Empty;
 
             // Create controller for instantiating the server
             ConfigurationController configurationController = new ConfigurationController();
-            StockServer server = configurationController.SetupServer(log);
+            StockServer server = configurationController.SetupServer(Log);
             if (server == null)
             {
                 System.Console.WriteLine("********** Console cannot be started due to these errors: ************");
@@ -38,7 +59,7 @@ namespace StockBandit.Console
             if (server.StartServer())
             {
                 // Server has started successfully
-                log.Info("**************** Server Started ********************");
+                Log.Info("**************** Server Started ********************");
 
                 // Send an email for compliance sites
                 server.SendStartedEmail();
@@ -48,29 +69,8 @@ namespace StockBandit.Console
                 {
                     switch (cmd.ToUpper())
                     {
-                        case "HELLO":
-                            System.Console.WriteLine(server.SayHello());
-                            break;
-                        case "FORCEPRICES":
+                        case "EVALUATE":
                             server.PriceFetchTimerElapsed(null);
-                            foreach (string priceOutput in server.GetLastPrices())
-                                System.Console.WriteLine(priceOutput);
-                            break;
-                        case "LISTPRICES":
-                            foreach (string priceOutput in server.GetLastPrices())
-                                System.Console.WriteLine(priceOutput);
-                            break;
-                        case "LISTPRICEHISTORIES":
-                            foreach (string priceOutput in server.GetLastPriceHistories())
-                                System.Console.WriteLine(priceOutput);
-                            break;
-                        case "ADDSTOCK":
-                            System.Console.WriteLine("Enter Stock Code: ");
-                            string stockCode = System.Console.ReadLine();
-                            System.Console.WriteLine("Enter Stock Name: ");
-                            string stockName = System.Console.ReadLine();
-                            server.AddStock(stockCode, stockName);
-                            System.Console.WriteLine("Success");
                             break;
                         default:
                             System.Console.WriteLine(string.Format("Unrecognised command - {0}", cmd.ToUpper()));
@@ -80,9 +80,9 @@ namespace StockBandit.Console
                     cmd = System.Console.ReadLine();
                 }
 
-                log.Info("**************** Stopping Server ********************");
+                Log.Info("**************** Stopping Server ********************");
                 server.StopServer();
-                log.Info("**************** Server Stopped ********************");
+                Log.Info("**************** Server Stopped ********************");
             }
             else
             {

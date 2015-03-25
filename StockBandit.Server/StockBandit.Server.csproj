@@ -72,9 +72,9 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="BanditService.cs" />
     <Compile Include="ConfigurationController.cs" />
     <Compile Include="EmailQueue.cs" />
+    <Compile Include="EmailQueueItem.cs" />
     <Compile Include="EmailServerConnection.cs" />
     <Compile Include="IModel.cs" />
     <Compile Include="IStockEngine.cs" />
@@ -92,7 +92,6 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Include="StockEngine.cs" />
     <Compile Include="StockServer.cs" />
   </ItemGroup>
   <ItemGroup>

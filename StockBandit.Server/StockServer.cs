@@ -1,87 +1,163 @@
 ﻿#region © Copyright
-//
-// © Copyright 2013 Lewis Harvey
-//   All rights reserved.
-//
-// This software is provided "as is" without warranty of any kind, express or implied, 
-// including but not limited to warranties of merchantability and fitness for a particular 
-// purpose. The authors do not support the Software, nor do they warrant
-// that the Software will meet your requirements or that the operation of the Software will
-// be uninterrupted or error free or that any defects will be corrected.
-//
+// <copyright file="StockServer.cs" company="Lewis Harvey">
+//      Copyright (c) Lewis Harvey. All rights reserved.
+//      This software is provided "as is" without warranty of any kind, express or implied, 
+//      including but not limited to warranties of merchantability and fitness for a particular 
+//      purpose. The authors do not support the Software, nor do they warrant
+//      that the Software will meet your requirements or that the operation of the Software will
+//      be uninterrupted or error free or that any defects will be corrected.
+// </copyright>
 #endregion
 
 using System;
-using System.Collections.ObjectModel;
-using System.Reflection;
-using log4net;
-using StockBandit.Model;
 using System.Collections.Generic;
-using System.Data.SqlTypes;
-using System.Threading;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.ServiceModel;
+using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
-using log4net.Core;
+
+using StockBandit.Model;
 
 namespace StockBandit.Server
 {
+    /// <summary>
+    /// Provides the server capabilities for the stock management.
+    /// </summary>
     public class StockServer
     {
-        #region ServerSettings
-
-        public string EmailServer { get; set; }
-        public string EmailFromAddress { get; set; }
-        public string EmailUsername { get; set; }
-        public string EmailPassword { get; set; }
-        public int EmailPort { get; set; }
-        public bool EmailSSL { get; set; }
-        public string EmailRecipient { get; set; }
-        public bool EnableVolume { get; set; }
-        public double AlertThreshold { get; set; }
-        public decimal MarketCapMax { get; set; }
-        public decimal MarketCapMin { get; set; }
-        public decimal PriceMin { get; set; }
-        public decimal PriceMax { get; set; }
-        public int HourToRun { get; set; }
-
-        #endregion
-
-        public ObservableCollection<Stock> StockCodesList { get; set; }
-
+        /// <summary>
+        /// The email queue for sending messages
+        /// </summary>
         private EmailQueue emailQueue;
-        //private Dictionary<string, List<DailyPrice>> historicPrices;
-        private object semaphore = new object();
-        private ServiceHost serviceHost;
+
+        /// <summary>
+        /// THe engine for receiving historical prices
+        /// </summary>
         private YahooHistoricWebStockEngine yahooHistoricWebStockEngine;
+
+        /// <summary>
+        /// The models that are registered for analysis
+        /// </summary>
         private List<IModel> registeredModels;
+
+        /// <summary>
+        /// The timer for collecting prices and doing analysis
+        /// </summary>
         private Timer priceFetchTimer;
+
+        /// <summary>
+        /// An instance of the logging engine
+        /// </summary>
         private LogQueue logQueue;
 
-        #region StartupProcedures
-
+        /// <summary>
+        /// Initialises a new instance of the <see cref="StockServer" /> class.
+        /// </summary>
         public StockServer()
         {
             this.logQueue = new LogQueue(1000);
-            this.serviceHost = new ServiceHost(new BanditService(this));
         }
 
+        /// <summary>
+        /// Gets or sets the email server address
+        /// </summary>
+        public string EmailServer { get; set; }
+
+        /// <summary>
+        /// Gets or sets the from address where emails should come from
+        /// </summary>
+        public string EmailFromAddress { get; set; }
+
+        /// <summary>
+        /// Gets or sets the username to access the mail server
+        /// </summary>
+        public string EmailUsername { get; set; }
+
+        /// <summary>
+        /// Gets or sets the password to access the mail server
+        /// </summary>
+        public string EmailPassword { get; set; }
+
+        /// <summary>
+        /// Gets or sets the port to access the email server
+        /// </summary>
+        public int EmailPort { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the mail server requires SLL
+        /// </summary>
+        public bool EmailSSL { get; set; }
+
+        /// <summary>
+        /// Gets or sets the recipient email address of system emails
+        /// </summary>
+        public string EmailRecipient { get; set; }
+        
+        /// <summary>
+        /// Gets or sets a value indicating whether the volume model is enabled
+        /// </summary>
+        public bool EnableVolume { get; set; }
+        
+        /// <summary>
+        /// Gets or sets the alerting threshold for volume
+        /// </summary>
+        public double AlertThreshold { get; set; }
+        
+        /// <summary>
+        /// Gets or sets the maximum market cap for stocks in the system
+        /// </summary>
+        public decimal MarketCapMax { get; set; }
+        
+        /// <summary>
+        /// Gets or sets the minimum market cap for stocks in the system
+        /// </summary>
+        public decimal MarketCapMin { get; set; }
+        
+        /// <summary>
+        /// Gets or sets the maximum price of a stock to check
+        /// </summary>
+        public decimal PriceMin { get; set; }
+        
+        /// <summary>
+        /// Gets or sets the minimum price of a stock to check
+        /// </summary>
+        public decimal PriceMax { get; set; }
+        
+        /// <summary>
+        /// Gets or sets the hour the system should do the analysis
+        /// </summary>
+        public int HourToRun { get; set; }
+        
+        /// <summary>
+        /// Gets or sets the number of days to silence a stock after alerting
+        /// </summary>
+        public int NumberOfDaysToSilence { get; set; }
+        
+        /// <summary>
+        /// Gets or sets the list of stocks held within the system.
+        /// </summary>
+        public ObservableCollection<Stock> StockCodesList { get; set; }
+
+        /// <summary>
+        /// Starts the server and all classes required.
+        /// </summary>
+        /// <returns>The result if it could be started,</returns>
         public bool StartServer()
         {
             try
             {
-                this.serviceHost.Open();
-
                 // Set up the email and log queues
                 if ((this.EmailServer.Trim().Length > 0) && (this.EmailFromAddress.Trim().Length > 0))
-                    this.emailQueue = new EmailQueue(this, this.EmailServer, this.EmailPort, this.EmailUsername, this.EmailPassword, this.EmailFromAddress, this.EmailSSL, 1000);
+                    this.emailQueue = new EmailQueue(this.EmailServer, this.EmailPort, this.EmailUsername, this.EmailPassword, this.EmailFromAddress, this.EmailSSL, 1000, this.logQueue);
                 else
                     this.logQueue.QueueLogEntry(new LogEntry(DateTime.Now, LogType.Info, "Email not configured."));
 
                 // Convert the stocks to a list
                 this.StockCodesList = new ObservableCollection<Stock>();
-                // Setup google for querying
+                
+                // Setup Yahoo for querying
                 this.yahooHistoricWebStockEngine = new YahooHistoricWebStockEngine(this.logQueue);
 
                 using (StockBanditDataContext dataContext = new StockBanditDataContext())
@@ -94,52 +170,35 @@ namespace StockBandit.Server
                 }
 
                 // Get all the historical data and populate
-                RegisterModels();
-                StartPriceFetchTimer();
+                this.RegisterModels();
+                this.StartPriceFetchTimer();
             }
             catch (Exception ex)
             {
                 this.logQueue.QueueLogEntry(new LogEntry(DateTime.Now, LogType.Fatal, string.Format("Error starting server - {0}", ex)));
                 return false;
             }
+
             return true;
         }
 
-        private void RegisterModels()
-        {
-            this.registeredModels = new List<IModel>();
-            if (this.EnableVolume)
-                this.registeredModels.Add(new VolumeModel(this.AlertThreshold, this.logQueue));
-        }
-
-        private void StartPriceFetchTimer()
-        {
-            // Create a callback for the timer 
-            AutoResetEvent autoEvent = new AutoResetEvent(false);
-            //TimerCallback timerDelegate = new TimerCallback(m => PriceFetchTimerElapsed());
-
-            // Create a timer that signals the delegate to invoke 
-            DateTime now = DateTime.Now;
-            DateTime today = now.Date;
-            DateTime nextRun = today.AddHours(this.HourToRun).AddDays(now.Hour >= this.HourToRun ? 1 : 0);
-            this.logQueue.QueueLogEntry(new LogEntry(DateTime.Now, LogType.Info, string.Format("Started Position Reset Timer. Next run time: {0}", nextRun)));
-
-            this.priceFetchTimer = new Timer(PriceFetchTimerElapsed, autoEvent, nextRun - DateTime.Now, TimeSpan.FromHours(24));
-        }
-        
+        /// <summary>
+        /// Stops the server
+        /// </summary>
+        /// <returns>The result of the stop attempt</returns>
         public bool StopServer()
         {
-            emailQueue.StopProcessingQueue();
+            this.emailQueue.StopProcessingQueue();
 
             this.logQueue.QueueLogEntry(new LogEntry(DateTime.Now, LogType.Info, "Server Stopped."));
             this.logQueue.StopProcessingQueue();
             return true;
         }
 
-        #endregion
-
-        #region Actions
-
+        /// <summary>
+        /// The method for the timer to fire
+        /// </summary>
+        /// <param name="sender">The sender object calling the method</param>
         public void PriceFetchTimerElapsed(object sender)
         {
             if (DateTime.Now.DayOfWeek == DayOfWeek.Saturday || DateTime.Now.DayOfWeek == DayOfWeek.Sunday)
@@ -147,7 +206,7 @@ namespace StockBandit.Server
 
             try
             {
-                PopulateHistoricPrices();
+                this.PopulateHistoricPrices();
 
                 StringBuilder resultStringBuilder = new StringBuilder();
 
@@ -156,35 +215,87 @@ namespace StockBandit.Server
                     string resultString = null;
 
                     if (!stock.Silenced)
-                        GetPricesAndEvaluate(stock, out resultString);
+                        this.GetPricesAndEvaluate(stock, out resultString);
                     else
                     {
                         // If it is silenced, has it been 30 days?
-                        if (stock.LastAlertTime.GetValueOrDefault() < DateTime.Now.AddDays(-30))
+                        if (stock.LastAlertTime.GetValueOrDefault() < DateTime.Now.AddDays(-this.NumberOfDaysToSilence))
                         {
-                            GetPricesAndEvaluate(stock, out resultString);
+                            this.GetPricesAndEvaluate(stock, out resultString);
 
                             // Now reset so it is checked again tomorrow.
-                            ResetStockSilenceFlags(stock);
+                            this.ResetStockSilenceFlags(stock);
                         }
                     }
 
                     if (!string.IsNullOrEmpty(resultString))
                     {
                         resultStringBuilder.AppendLine(resultString);
-                        SilenceStock(stock);
+                        this.SilenceStock(stock);
                     }
                 }
 
-                QueueEmail(this.EmailRecipient, "DAILY STOCK DIGEST", resultStringBuilder.ToString());
+                this.QueueEmail(this.EmailRecipient, "DAILY STOCK DIGEST", resultStringBuilder.ToString());
             }
             catch (Exception e)
             {
                 this.logQueue.QueueLogEntry(new LogEntry(DateTime.Now, LogType.Error, string.Format("Error in PriceAnalysisTimerElapsed: {0}", e)));
-                QueueEmail(this.EmailRecipient, "System Error", e.ToString());
+                this.QueueEmail(this.EmailRecipient, "System Error", e.ToString());
             }
         }
 
+        /// <summary>
+        /// Send a started email to indicate the system has started.
+        /// </summary>
+        public void SendStartedEmail()
+        {
+            if (!string.IsNullOrEmpty(this.EmailRecipient))
+            {
+                try
+                {
+                    this.QueueEmail(
+                        this.EmailRecipient,
+                        "Stock Bandit Server Started",
+                        string.Format("Stock Bandit server started successfully at {0} on version {1}", DateTime.Now.ToString("HH:mm:ss dd/MM/yyyy"), Assembly.GetExecutingAssembly().GetName().Version.ToString()));
+                }
+                catch (Exception e)
+                {
+                    this.logQueue.QueueLogEntry(new LogEntry(DateTime.Now, LogType.Error, string.Format("Exception in StockServer.SendStartedEmail - Exception: {0}", e.ToString())));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Register all the analysis models to be checked
+        /// </summary>
+        private void RegisterModels()
+        {
+            this.registeredModels = new List<IModel>();
+            if (this.EnableVolume)
+                this.registeredModels.Add(new VolumeModel(this.AlertThreshold, this.logQueue));
+        }
+
+        /// <summary>
+        /// Start the timer that will periodically check prices
+        /// </summary>
+        private void StartPriceFetchTimer()
+        {
+            // Create a callback for the timer 
+            AutoResetEvent autoEvent = new AutoResetEvent(false);
+
+            // Create a timer that signals the delegate to invoke 
+            DateTime now = DateTime.Now;
+            DateTime today = now.Date;
+            DateTime nextRun = today.AddHours(this.HourToRun).AddDays(now.Hour >= this.HourToRun ? 1 : 0);
+            this.logQueue.QueueLogEntry(new LogEntry(DateTime.Now, LogType.Info, string.Format("Started Position Reset Timer. Next run time: {0}", nextRun)));
+
+            this.priceFetchTimer = new Timer(this.PriceFetchTimerElapsed, autoEvent, nextRun - DateTime.Now, TimeSpan.FromHours(24));
+        }
+        
+        /// <summary>
+        /// Silence a stock when it have alerted
+        /// </summary>
+        /// <param name="stock">The stock to silence</param>
         private void SilenceStock(Stock stock)
         {
             using (StockBanditDataContext dataContext = new StockBanditDataContext())
@@ -199,6 +310,10 @@ namespace StockBandit.Server
             }
         }
 
+        /// <summary>
+        /// Reset the stock silence flags so it is checked again
+        /// </summary>
+        /// <param name="stock">The stock to reset</param>
         private void ResetStockSilenceFlags(Stock stock)
         {
             using (StockBanditDataContext dataContext = new StockBanditDataContext())
@@ -213,6 +328,11 @@ namespace StockBandit.Server
             }
         }
 
+        /// <summary>
+        /// Collect the historical prices for a stock and evaluate against the registered models
+        /// </summary>
+        /// <param name="stock">The stock to check</param>
+        /// <param name="resultString">The output string of the evaluation</param>
         private void GetPricesAndEvaluate(Stock stock, out string resultString)
         {
             resultString = null;
@@ -231,38 +351,27 @@ namespace StockBandit.Server
                 {
                     foreach (IModel model in this.registeredModels)
                         model.Evaluate(stock, historicPrices, out resultString);
-                }               
-            }
-        }
-
-        public void SendStartedEmail()
-        {
-            if (!string.IsNullOrEmpty(this.EmailRecipient))
-            {
-                try
-                {
-                    QueueEmail(this.EmailRecipient, "Stock Bandit Server Started",
-                            string.Format("Stock Bandit server started successfully at {0} on version {1}", DateTime.Now.ToString("HH:mm:ss dd/MM/yyyy"), Assembly.GetExecutingAssembly().GetName().Version.ToString()));
-                }
-                catch (Exception e)
-                {
-                    this.logQueue.QueueLogEntry(new LogEntry(DateTime.Now, LogType.Error, string.Format("Exception in StockServer.SendStartedEmail - Exception: {0}", e.ToString())));
                 }
             }
         }
 
-        public void QueueEmail(string recipient, string subject, string body)
+        /// <summary>
+        /// Queue an email to be sent
+        /// </summary>
+        /// <param name="recipient">The recipient of the message</param>
+        /// <param name="subject">The subject of the message</param>
+        /// <param name="body">The body of the message</param>
+        private void QueueEmail(string recipient, string subject, string body)
         {
             if (this.emailQueue != null)
             {
                 this.emailQueue.QueueEmail(recipient, subject, body);
             }
         }
-
-        #endregion
-
-        #region PrivateHelpders
                 
+        /// <summary>
+        /// Populate the historic prices for all stocks
+        /// </summary>
         private void PopulateHistoricPrices()
         {
             try
@@ -287,10 +396,7 @@ namespace StockBandit.Server
                     if (lastRetrieveDate == default(DateTime))
                         lastRetrieveDate = DateTime.Now.AddDays(-35);
 
-                    Task updateTask = Task.Factory.StartNew(() =>
-                    {
-                       GetPricesForStock(stock, lastRetrieveDate);
-                    }, TaskCreationOptions.LongRunning);
+                    Task updateTask = Task.Factory.StartNew(() => { this.GetPricesForStock(stock, lastRetrieveDate); }, TaskCreationOptions.LongRunning);
                     updateTasks.Add(updateTask);
 
                     this.logQueue.QueueLogEntry(new LogEntry(DateTime.Now, LogType.Info, string.Format("Collected Historic Prices for {0}", stock.StockCode)));
@@ -305,16 +411,20 @@ namespace StockBandit.Server
             catch (Exception e)
             {
                 this.logQueue.QueueLogEntry(new LogEntry(DateTime.Now, LogType.Error, string.Format("Error in PopulateHistoricPrices: {0}", e)));
-                QueueEmail(this.EmailRecipient, "System Error", e.ToString());
+                this.QueueEmail(this.EmailRecipient, "System Error", e.ToString());
             }
 
             this.logQueue.QueueLogEntry(new LogEntry(DateTime.Now, LogType.Info, "Finished Collecting Historic Prices"));
         }
 
+        /// <summary>
+        /// Gets the historic prices for a stock
+        /// </summary>
+        /// <param name="stock">The stock to collect prices for</param>
+        /// <param name="lastRetrieveDate">The date last retrieved</param>
         private void GetPricesForStock(Stock stock, DateTime lastRetrieveDate)
         {
-            List<DailyPrice> historicPrices = this.yahooHistoricWebStockEngine.Fetch(stock,
-                lastRetrieveDate);
+            List<DailyPrice> historicPrices = this.yahooHistoricWebStockEngine.Fetch(stock, lastRetrieveDate);
 
             using (StockBanditDataContext dataContext = new StockBanditDataContext())
             {
@@ -343,85 +453,5 @@ namespace StockBandit.Server
                 }
             }
         }
-
-        #endregion
-
-        #region CommandActions
-
-        public string SayHello()
-        {
-            return "Hello, I'm the Stock Bandit service and I'm running.";
-        }
-
-        public List<string> GetLastPrices()
-        {
-            using (var dataContext = new StockBanditDataContext())
-            {
-                return (from item in dataContext.Stocks from price in item.DailyPrices.OrderByDescending(p => p.Date).Take(1).ToList() select string.Format("{0} - {1}: {2}p", item.StockCode, price.Date.ToShortDateString(), price.Close)).ToList();
-            }
-        }
-
-        public List<string> GetLastPriceHistories()
-        {
-            using (var dataContext = new StockBanditDataContext())
-            {
-                return (from item in dataContext.Stocks from price in item.DailyPrices.OrderByDescending(p => p.Date).Take(10).ToList() select string.Format("{0} - {1}: {2}p", item.StockCode, price.Date.ToShortDateString(), price.Close)).ToList();
-            }
-        }
-
-        #endregion
-
-        #region StockAdministration
-
-        public void AddStock(string stockCode, string stockName)
-        {
-            using (StockBanditDataContext dataContext = new StockBanditDataContext())
-            {
-                if (string.IsNullOrEmpty(stockCode))
-                    throw new ApplicationException("StockCode cannot be null");
-                if (string.IsNullOrEmpty(stockName))
-                    throw new ApplicationException("StockName cannot be null");
-                var newStock = new Stock() {StockCode = stockCode, StockName = stockName};
-                dataContext.Stocks.InsertOnSubmit(newStock);
-                dataContext.SubmitChanges();
-
-                // Now repopulate the StockCodesList
-                lock (semaphore)
-                {
-                    this.StockCodesList = new ObservableCollection<Stock>();
-                    foreach (var stock in dataContext.Stocks)
-                        this.StockCodesList.Add(stock);
-
-                    PopulateHistoricPrices();
-                }
-            }
-        }
-
-        public void DeleteStock(string stockCode)
-        {
-            using (StockBanditDataContext dataContext = new StockBanditDataContext())
-            {
-                if (string.IsNullOrEmpty(stockCode))
-                    throw new ApplicationException("StockCode cannot be null");
-                Stock deletedStock = dataContext.Stocks.FirstOrDefault(s => s.StockCode.ToUpper() == stockCode.ToUpper());
-                if (deletedStock != null)
-                {
-                    lock (semaphore)
-                    {
-                        dataContext.DailyPrices.DeleteAllOnSubmit(
-                            dataContext.DailyPrices.Where(p => p.StockCode == deletedStock.StockCode));
-                        dataContext.Stocks.DeleteOnSubmit(deletedStock);
-                        dataContext.SubmitChanges();
-
-                        // Now repopulate the StockCodesList
-                        this.StockCodesList = new ObservableCollection<Stock>();
-                        foreach (var stock in dataContext.Stocks)
-                            this.StockCodesList.Add(stock);
-                    }
-                }
-            }
-        }
-
-        #endregion
     }
 }

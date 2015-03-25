@@ -1,13 +1,21 @@
-﻿
+﻿#region © Copyright
+// <copyright file="LogQueue.cs" company="Lewis Harvey">
+//      Copyright (c) Lewis Harvey. All rights reserved.
+//      This software is provided "as is" without warranty of any kind, express or implied, 
+//      including but not limited to warranties of merchantability and fitness for a particular 
+//      purpose. The authors do not support the Software, nor do they warrant
+//      that the Software will meet your requirements or that the operation of the Software will
+//      be uninterrupted or error free or that any defects will be corrected.
+// </copyright>
+#endregion
+
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using StockBandit.Model;
-using log4net;
 using System.Reflection;
 using System.Threading;
+
+using log4net;
+using StockBandit.Model;
 
 namespace StockBandit.Server
 {
@@ -103,16 +111,13 @@ namespace StockBandit.Server
                                     Log.WarnFormat("EventTime: {0}; Message: {1};", logEntry.EventTime, logEntry.Message);
                                     break;
                                 case LogType.Fatal:
-                                    Log.FatalFormat("EventTime: {0}; Message: {1};", logEntry.EventTime,
-                                        logEntry.Message);
+                                    Log.FatalFormat("EventTime: {0}; Message: {1};", logEntry.EventTime, logEntry.Message);
                                     break;
                                 case LogType.Error:
-                                    Log.ErrorFormat("EventTime: {0}; Message: {1};", logEntry.EventTime,
-                                        logEntry.Message);
+                                    Log.ErrorFormat("EventTime: {0}; Message: {1};", logEntry.EventTime, logEntry.Message);
                                     break;
                                 case LogType.Debug:
-                                    Log.DebugFormat("EventTime: {0}; Message: {1};", logEntry.EventTime,
-                                        logEntry.Message);
+                                    Log.DebugFormat("EventTime: {0}; Message: {1};", logEntry.EventTime, logEntry.Message);
                                     break;
                                 default:
                                     throw new ApplicationException("Logging format not supported.");
@@ -128,7 +133,8 @@ namespace StockBandit.Server
                 {
                     Thread.Sleep(sleep);
                 }
-            } while (this.shouldContinueProcessing || this.logQueue.Count > 0);
+            } 
+            while (this.shouldContinueProcessing || this.logQueue.Count > 0);
         }
     }
 }

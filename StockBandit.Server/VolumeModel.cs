@@ -1,22 +1,55 @@
-﻿using StockBandit.Model;
+﻿#region © Copyright
+// <copyright file="VolumeModel.cs" company="Lewis Harvey">
+//      Copyright (c) Lewis Harvey. All rights reserved.
+//      This software is provided "as is" without warranty of any kind, express or implied, 
+//      including but not limited to warranties of merchantability and fitness for a particular 
+//      purpose. The authors do not support the Software, nor do they warrant
+//      that the Software will meet your requirements or that the operation of the Software will
+//      be uninterrupted or error free or that any defects will be corrected.
+// </copyright>
+#endregion
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+
+using StockBandit.Model;
 
 namespace StockBandit.Server
 {
+    /// <summary>
+    /// An implementation of a model for checking volume anomalies.
+    /// </summary>
     public class VolumeModel : IModel
     {
+        /// <summary>
+        /// The threshold for alerting against the volume
+        /// </summary>
         private readonly double alertThreshold;
+
+        /// <summary>
+        /// An instance of the logging engine
+        /// </summary>
         private readonly ILogQueue logQueue; 
 
+        /// <summary>
+        /// Initialises a new instance of the <see cref="VolumeModel" /> class.
+        /// </summary>
+        /// <param name="alertThreshold">the threshold at which volume above the average should alert on</param>
+        /// <param name="logQueue">Instance of the logging engine</param>
         public VolumeModel(double alertThreshold, ILogQueue logQueue)
         {
             this.alertThreshold = alertThreshold;
             this.logQueue = logQueue;
         }
 
+        /// <summary>
+        /// Evaluates a stock to check against this model
+        /// </summary>
+        /// <param name="stock">The stock to check</param>
+        /// <param name="historicPrices">The last prices to use in the model</param>
+        /// <param name="emailBody">An output of the email text to append to the email</param>
+        /// <returns>A flag indicating if the stock evaluated to being above volume</returns>
         public bool Evaluate(Stock stock, List<DailyPrice> historicPrices, out string emailBody)
         {
             if (historicPrices.Count > 0)
@@ -36,7 +69,10 @@ namespace StockBandit.Server
                     emailBody =
                         string.Format(
                             "Stock: {0}\r\nPrice: {1}\r\nVolume: {2}\r\nAverage Volume: {3}\r\n\r\n",
-                            stock.StockCode, todayPrice.Close, todayPrice.Volume, Math.Round(averageVolume, 0));
+                            stock.StockCode, 
+                            todayPrice.Close, 
+                            todayPrice.Volume, 
+                            Math.Round(averageVolume, 0));
                     this.logQueue.QueueLogEntry(new LogEntry(DateTime.Now, LogType.Info, emailBody));
                     return true;
                 }
