@@ -101,7 +101,7 @@ namespace StockBandit.Service
             {
                 this.WriteLogHeader();
 
-                this.stockServer = this.configurationController.SetupServer(Log);
+                this.stockServer = this.configurationController.SetupServer(new LogQueue(1000));
                 if (this.stockServer == null)
                 {
                     this.Stop();

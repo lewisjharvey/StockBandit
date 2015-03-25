@@ -46,7 +46,7 @@ namespace StockBandit.Console
 
             // Create controller for instantiating the server
             ConfigurationController configurationController = new ConfigurationController();
-            StockServer server = configurationController.SetupServer(Log);
+            StockServer server = configurationController.SetupServer(new LogQueue(1000));
             if (server == null)
             {
                 System.Console.WriteLine("********** Console cannot be started due to these errors: ************");

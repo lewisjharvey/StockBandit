@@ -142,6 +142,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\StockBandit.Model\StockBandit.Model.csproj">
+      <Project>{0aaa53a2-f956-40e6-9d8f-376678a1c398}</Project>
+      <Name>StockBandit.Model</Name>
+    </ProjectReference>
     <ProjectReference Include="..\StockBandit.Server\StockBandit.Server.csproj">
       <Project>{D69F953C-CC2E-4DEA-925C-6B50D8B16C5C}</Project>
       <Name>StockBandit.Server</Name>

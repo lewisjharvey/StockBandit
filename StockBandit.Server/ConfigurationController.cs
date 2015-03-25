@@ -13,7 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 
-using log4net;
+using StockBandit.Model;
 
 namespace StockBandit.Server
 {
@@ -125,12 +125,12 @@ namespace StockBandit.Server
         /// </summary>
         /// <param name="log">The log for logging output.</param>
         /// <returns>An instance of the server.</returns>
-        public StockServer SetupServer(ILog log)
+        public StockServer SetupServer(ILogQueue log)
         {
             // Validate all configuration settings
             if (!this.ValidateConfiguration())
             {
-                log.Error(this.ErrorMessages);
+                this.ErrorMessages.ForEach(e => log.QueueLogEntry(new LogEntry(LogType.Error, e)));
                 return null;
             }
 
