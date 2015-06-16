@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using MathNet.Numerics;
 using StockBandit.Model;
 
 namespace StockBandit.Server
@@ -65,16 +66,20 @@ namespace StockBandit.Server
 
                 if (todayPrice.Volume > (averageVolume * this.alertThreshold))
                 {
-                    // Volume indicates a shift in movement soon
-                    emailBody =
-                        string.Format(
-                            "Stock: {0}\r\nPrice: {1}\r\nVolume: {2}\r\nAverage Volume: {3}\r\n\r\n",
-                            stock.StockCode, 
-                            todayPrice.Close, 
-                            todayPrice.Volume, 
-                            Math.Round(averageVolume, 0));
-                    this.logQueue.QueueLogEntry(new LogEntry(DateTime.Now, LogType.Info, emailBody));
-                    return true;
+                    // Check the trend and ignore downward trends
+                    if (this.CheckUpwardTrend(historicPrices.Take(90).ToList()))
+                    {
+                        // Volume indicates a shift in movement soon
+                        emailBody =
+                            string.Format(
+                                "Stock: {0}\r\nPrice: {1}\r\nVolume: {2}\r\nAverage Volume: {3}\r\n\r\n",
+                                stock.StockCode,
+                                todayPrice.Close,
+                                todayPrice.Volume,
+                                Math.Round(averageVolume, 0));
+                        this.logQueue.QueueLogEntry(new LogEntry(DateTime.Now, LogType.Info, emailBody));
+                        return true;
+                    }
                 }
 
                 this.logQueue.QueueLogEntry(new LogEntry(DateTime.Now, LogType.Info, string.Format("Finished VolumeModel Evaluation of {0} with {1} historic prices.", stock.StockCode, historicPrices.Count)));
@@ -86,6 +91,26 @@ namespace StockBandit.Server
             this.logQueue.QueueLogEntry(new LogEntry(DateTime.Now, LogType.Error, string.Format("No historic prices found for: {0}", stock.StockCode)));
             emailBody = null;
             return false;
+        }
+
+        /// <summary>
+        /// Checks if the trend if upwards
+        /// </summary>
+        /// <param name="prices">The closing prices to check</param>
+        /// <returns>A flag indicating if the trend is upwards</returns>
+        private bool CheckUpwardTrend(List<DailyPrice> prices)
+        {
+            // Reverse as they come in in the wrong order
+            prices.Reverse();
+
+            double[] initialXAxis = Enumerable.Range(1, prices.Count()).Select(p => (double)p).ToArray();
+            Tuple<double, double> result = Fit.Line(initialXAxis, prices.Select(p => (double)p.Close).ToArray());
+
+            // Item2 is the slope
+            if (result.Item2 > 0)
+                return true;
+            else
+                return false;
         }
     }
 }

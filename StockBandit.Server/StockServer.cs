@@ -394,7 +394,7 @@ namespace StockBandit.Server
                     }
 
                     if (lastRetrieveDate == default(DateTime))
-                        lastRetrieveDate = DateTime.Now.AddDays(-35);
+                        lastRetrieveDate = DateTime.Now.AddDays(-150);
 
                     Task updateTask = Task.Factory.StartNew(() => { this.GetPricesForStock(stock, lastRetrieveDate); }, TaskCreationOptions.LongRunning);
                     updateTasks.Add(updateTask);
