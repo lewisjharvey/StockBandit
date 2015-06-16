@@ -67,16 +67,18 @@ namespace StockBandit.Server
                 if (todayPrice.Volume > (averageVolume * this.alertThreshold))
                 {
                     // Check the trend and ignore downward trends
-                    if (this.CheckUpwardTrend(historicPrices.Take(90).ToList()))
+                    double slope = 0.0;
+                    if (this.CheckUpwardTrend(historicPrices.Take(90).ToList(), out slope))
                     {
                         // Volume indicates a shift in movement soon
                         emailBody =
                             string.Format(
-                                "Stock: {0}\r\nPrice: {1}\r\nVolume: {2}\r\nAverage Volume: {3}\r\n\r\n",
+                                "Stock: {0}\r\nPrice: {1}\r\nVolume: {2}\r\nAverage Volume: {3}\r\nSlope: {4}\r\n\r\n",
                                 stock.StockCode,
                                 todayPrice.Close,
                                 todayPrice.Volume,
-                                Math.Round(averageVolume, 0));
+                                Math.Round(averageVolume, 0),
+                                Math.Round(slope, 2));
                         this.logQueue.QueueLogEntry(new LogEntry(DateTime.Now, LogType.Info, emailBody));
                         return true;
                     }
@@ -98,7 +100,8 @@ namespace StockBandit.Server
         /// </summary>
         /// <param name="prices">The closing prices to check</param>
         /// <returns>A flag indicating if the trend is upwards</returns>
-        private bool CheckUpwardTrend(List<DailyPrice> prices)
+        /// <param name="slope">The slope to indicate speed of movement</param>
+        private bool CheckUpwardTrend(List<DailyPrice> prices, out double slope)
         {
             // Reverse as they come in in the wrong order
             prices.Reverse();
@@ -107,7 +110,8 @@ namespace StockBandit.Server
             Tuple<double, double> result = Fit.Line(initialXAxis, prices.Select(p => (double)p.Close).ToArray());
 
             // Item2 is the slope
-            if (result.Item2 > 0)
+            slope = result.Item2;
+            if (slope > 0)
                 return true;
             else
                 return false;
